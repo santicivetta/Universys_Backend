@@ -1,3 +1,4 @@
+//que hacemos con varios errores?
 
 /*
 id sesion
@@ -69,72 +70,68 @@ public static function connect(){
 	return $connection;
 }
 
+public static function chequeoVersion($connection, $versionAChequear){
 
+}
 
+public static function validoCredenciales($conexion, $mail, $password){
+	$query = "SELECT * FROM usuarios WHERE mail='$mail' and password='$password'";
+	$result = mysqli_query($connection, $query) or die(mysqli_error($connection));
+	$count = mysqli_num_rows($result);
 
+}
 
-
-
-$json_params = file_get_contents("php://input");
-
-$request = decode($json_params);
-
-$mail = $request["mail"];
-$password = $request["password"];
-
-$query = "SELECT * FROM usuarios WHERE mail='$mail' and password='$password'";
-$result = mysqli_query($connection, $query) or die(mysqli_error($connection));
-$count = mysqli_num_rows($result);
-
-if ($count == 1){
+public static function traigoDatos($conexion, $idUsuario){
 	if ($result = $mysqli->query("SELECT * FROM phase1")) {
 
 		while($row = $result->fetch_array(MYSQL_ASSOC)) {
 			$myArray[] = $row;
 		}
-		echo json_encode($myArray);
+}
+
+
+
+try {
+	
+	//recibo json
+	$json_params = file_get_contents("php://input");
+
+	//decodifico
+	$miJson = decode($json_params);
+
+	//chequeo id sesion
+	if (isset($request["sesion"])) {
+		throw new Exception("799");	
 	}
-}else{
 
-	echo "<script language='javascript'>
-	alert('ERROR: Credenciales invalidas');
-	window.location.href = 'mail.html';
-	</script>";
-}
-}
-?>
+	//chequeo user agent ver si sirve http://mobiledetect.net
 
-/*pasar todo lo de arriba a objetos*/
-<?php
+	//conecto a la base
+	$conexion = connect();
 
+	//chequeo version
+	chequeoVersion($conexion, $request["apiVer"]);
 
+	//valido credenciales
+	$idUsuario = validoCredenciales($conexion, $request["mail"], $request["password"]);
 
-/* check connection */
+	$datosUsuario = traigoDatos($conexion, $idUsuario);
 
-/* Create table doesn't return a resultset */
-if ($mysqli->query("CREATE TEMPORARY TABLE myCity LIKE City") === TRUE) {
-    printf("Table myCity successfully created.\n");
-}
+	$arraySalida = armarSalida($datosUsuario, "200");
 
-/* Select queries return a resultset */
-if ($result = $mysqli->query("SELECT Name FROM City LIMIT 10")) {
-    printf("Select returned %d rows.\n", $result->num_rows);
+	$mysqli->close();
 
-    /* free result set */
-    $result->close();
-}
+	echo json_encode($arraySalida);
 
-/* If we have to retrieve large amount of data we use MYSQLI_USE_RESULT */
-if ($result = $mysqli->query("SELECT * FROM City", MYSQLI_USE_RESULT)) {
+} catch (Exception $e) {
 
-    /* Note, that we can't execute any functions which interact with the
-       server until result set was closed. All calls will return an
-       'out of sync' error */
-    if (!$mysqli->query("SET @a:='this will not work'")) {
-        printf("Error: %s\n", $mysqli->error);
-    }
-    $result->close();
+	$arraySalida = armarSalida(null, $e->getMessage());
+
+	$mysqli->close();
+	
+	echo json_encode($arraySalida);
+
 }
 
-$mysqli->close();
+
 ?>
