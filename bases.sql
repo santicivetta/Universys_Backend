@@ -55,5 +55,44 @@ domicilio varchar(100),
 PRIMARY KEY (legajo),
 FOREIGN KEY (mail) REFERENCES Usuarios(usuario));
 
+CREATE TABLE Carreras(
+idCarrera int not null unique,
+nombre varchar(100) not null,
+PRIMARY KEY (idCarrera));
+
+CREATE TABLE Materias(
+idMateria int not null unique,
+nombre varchar(50) not null unique,
+PRIMARY KEY (idMateria));
+
+CREATE TABLE Catedras(
+idMateria int not null,
+catedra varchar(30) not null,
+horasCatedra int,
+titular varchar(50),
+PRIMARY KEY(idMateria,catedra),
+FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
+
+CREATE TABLE AlumnosXCatedra(
+idAlumXCat int not null unique,
+matricula int not null,
+idMateria int not null,
+catedra varchar(30) not null,
+PRIMARY KEY(idInscripcion),
+FOREIGN KEY(matricula) REFERENCES Alumnos(matricula),
+FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
+FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
+
+CREATE TABLE ProfesoresXCatedra(
+idProfXCat int not null unique,
+legajo int not null,
+idMateria int not null,
+catedra varchar(30) not null,
+PRIMARY KEY(idInscripcion),
+FOREIGN KEY(legajo) REFERENCES Profesores(legajo),
+FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
+FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
+
+
 
 
