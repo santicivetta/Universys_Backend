@@ -77,14 +77,40 @@ CREATE TABLE Cursadas(
 idCursada int not null unique,
 idMateria int not null,
 catedra int not null,
-año year,
+año year not null,
+horario varchar(100),
+parcial datetime,
+recuperatorio1 datetime,
+recuperatorio2 datetime,
 PRIMARY KEY(idCursada),
 FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
 FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
 
+CREATE TABLE Finales(
+idFinal int not null unique,
+idMateria int not null,
+catedra int not null,
+fecha datetime,
+PRIMARY KEY(idFinal),
+FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
+FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
+
+CREATE TABLE NotasDeFinales(
+idNota int not null unique,
+idFinal int not null,
+idCursada int not null,
+matricula int not null,
+nota int not null,
+PRIMARY KEY(idNota),
+FOREIGN KEY(idFinal) REFERENCES Finales(idFinal),
+FOREIGN KEY(idCursada) REFERENCES AlumnosXCursada(idCursada),
+FOREIGN KEY(matricula) REFERENCES AlumnosXCursada(matricula));
+
 CREATE TABLE AlumnosXCursada(
 idCursada int not null,
 matricula int not null,
+notaParcial int,
+notaRecuperatorio int,
 PRIMARY KEY(idCursada,matricula),
 FOREIGN KEY(matricula) REFERENCES Alumnos(matricula),
 FOREIGN KEY(idCursada) REFERENCES Cursadas(idCursada));
