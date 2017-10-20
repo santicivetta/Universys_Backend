@@ -4,8 +4,8 @@ CREATE TABLE Usuarios(
 usuario varchar(50) not null unique,
 contraseña varchar(30) not null,
 idRol int not null,
-PRIMARY KEY(mail),
-FOREIGN KEY(id_rol) REFERENCES Roles(id_rol));
+PRIMARY KEY(usuario),
+FOREIGN KEY(idrol) REFERENCES Roles(idRol));
 
 CREATE TABLE Alumnos(
 matricula int not null unique,
@@ -29,7 +29,7 @@ CREATE TABLE Roles(
 idRol int not null unique,
 descripcion varchar(30) not null,
 tabla varchar(30) not null,
-PRIMARY KEY (id_rol));
+PRIMARY KEY (idRol));
 
 CREATE TABLE Profesores(
 legajo int not null unique,
