@@ -73,25 +73,28 @@ titular varchar(50),
 PRIMARY KEY(idMateria,catedra),
 FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 
-CREATE TABLE AlumnosXCatedra(
-idAlumXCat int not null unique,
-matricula int not null,
+CREATE TABLE Cursadas(
+idCursada int not null unique,
 idMateria int not null,
-catedra varchar(30) not null,
-PRIMARY KEY(idInscripcion),
-FOREIGN KEY(matricula) REFERENCES Alumnos(matricula),
+catedra int not null,
+año year,
+PRIMARY KEY(idCursada),
 FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
 FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
 
-CREATE TABLE ProfesoresXCatedra(
-idProfXCat int not null unique,
+CREATE TABLE AlumnosXCursada(
+idCursada int not null,
+matricula int not null,
+PRIMARY KEY(idCursada,matricula),
+FOREIGN KEY(matricula) REFERENCES Alumnos(matricula),
+FOREIGN KEY(idCursada) REFERENCES Cursadas(idCursada));
+
+CREATE TABLE ProfesoresXCursada(
+idCursada int not null,
 legajo int not null,
-idMateria int not null,
-catedra varchar(30) not null,
-PRIMARY KEY(idInscripcion),
+PRIMARY KEY(idCursada,legajo),
 FOREIGN KEY(legajo) REFERENCES Profesores(legajo),
-FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
-FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
+FOREIGN KEY(idCursada) REFERENCES Cursadas(idCursada));
 
 
 
