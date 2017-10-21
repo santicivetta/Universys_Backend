@@ -3,7 +3,7 @@ use apholos_universys;
 DROP TABLE IF EXISTS Usuarios;
 CREATE TABLE Usuarios(
 usuario varchar(50) not null unique,
-contraseña varchar(30) not null,
+contraseña varchar(50) not null,
 idRol int not null,
 PRIMARY KEY(usuario),
 FOREIGN KEY(idrol) REFERENCES Roles(idRol));
@@ -31,7 +31,7 @@ FOREIGN KEY (usuario) REFERENCES Usuarios(usuario));
 
 DROP TABLE IF EXISTS Roles;
 CREATE TABLE Roles(
-idRol int not null unique,
+idRol int not null unique auto_increment,
 descripcion varchar(30) not null,
 tabla varchar(30) not null,
 PRIMARY KEY (idRol));
