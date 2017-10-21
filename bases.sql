@@ -23,8 +23,9 @@ FOREIGN KEY (mail) REFERENCES Usuarios(usuario));
 
 DROP TABLE IF EXISTS Sesiones;
 CREATE TABLE Sesiones(
-idSesion int not null unique,
+idSesion int not null auto_increment,
 usuario varchar(50) not null,
+fechaAlta datetime,
 PRIMARY KEY(idSesion),
 FOREIGN KEY (usuario) REFERENCES Usuarios(usuario));
 
@@ -66,6 +67,14 @@ CREATE TABLE Carreras(
 idCarrera int not null unique,
 nombre varchar(100) not null,
 PRIMARY KEY (idCarrera));
+
+DROP TABLE IF EXISTS MateriasXCarreras;
+CREATE TABLE MateriasXCarreras(
+idCarrera int not null,
+idMateria int not null,
+PRIMARY KEY(idCarrera,idMateria),
+FOREIGN KEY(idCarrera) REFERENCES Carreras(idCarrera),
+FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 
 DROP TABLE IF EXISTS Materias;
 CREATE TABLE Materias(
@@ -135,15 +144,5 @@ legajo int not null,
 PRIMARY KEY(idCursada,legajo),
 FOREIGN KEY(legajo) REFERENCES Profesores(legajo),
 FOREIGN KEY(idCursada) REFERENCES Cursadas(idCursada));
-
-
-
-
-
-
-
-
-
-
 
 
