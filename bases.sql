@@ -145,4 +145,16 @@ PRIMARY KEY(idCursada,legajo),
 FOREIGN KEY(legajo) REFERENCES Profesores(legajo),
 FOREIGN KEY(idCursada) REFERENCES Cursadas(idCursada));
 
+DROP TABLE IF EXISTS AlumnosXCarrera;
+CREATE TABLE AlumnosXCarrera(
+matricula int not null,
+idCarrera int not null,
+PRIMARY KEY(matricula,idCarrera),
+FOREIGN KEY(matricula) REFERENCES Alumnos(matricula),
+FOREIGN KEY(idCarrera) REFERENCES Carreras(idCarrera));
+
+
+
+
+
 
