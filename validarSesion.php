@@ -1,8 +1,8 @@
 <?php
 
-include defines.php;
+include ('defines.php');
 
-public static function validarSesion($conexion, $sesion){
+function validarSesion($conexion, $sesion){
 	$query='SELECT u.usuario,r.tabla,s.fechaAlta
 			FROM 	Sesiones s,
 					Usuarios u,
