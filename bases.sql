@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS Sesiones;
 CREATE TABLE Sesiones(
 idSesion int not null auto_increment,
 usuario varchar(50) not null,
-fechaAlta datetime,
+fechaAlta date,
 PRIMARY KEY(idSesion),
 FOREIGN KEY (usuario) REFERENCES Usuarios(usuario));
 

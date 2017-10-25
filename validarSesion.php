@@ -1,7 +1,9 @@
 <?php
 
+include defines.php;
+
 public static function validarSesion($conexion, $sesion){
-	$query='SELECT u.usuario,r.tabla
+	$query='SELECT u.usuario,r.tabla,s.fechaAlta
 			FROM 	Sesiones s,
 					Usuarios u,
 					Roles r
@@ -18,7 +20,12 @@ public static function validarSesion($conexion, $sesion){
 		throw new Exception('1501');
 
 	$row = $result->fetch_array(MYSQL_ASSOC);
-	return array('usuario'=>$row['usuario'],'tabla'=>$row['tabla']);
+
+	$fecha = new DateTime($row['fechaAlta']);
+	$fecha->add(new DateInterval('P' . diasSesiones . 'D'));
+	echo $fecha->format('Y-m-d') . "\n";
+
+	//*return array('usuario'=>$row['usuario'],'tabla'=>$row['tabla']);
 }
 
 ?>
