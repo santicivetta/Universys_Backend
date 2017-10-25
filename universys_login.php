@@ -18,11 +18,11 @@ Ejemplo de JSON:
 	“apiVer” : ”1.0”,
 	“errorId” : “404”,
 	“usuario” : { 
-				“nombre” : ”Diego”,
-				“apellido” : “Maradona”,
-				“fNac” : “3/8/01”,
-				“tipo” : “alumno”
-				}
+	“nombre” : ”Diego”,
+	“apellido” : “Maradona”,
+	“fNac” : “3/8/01”,
+	“tipo” : “alumno”
+}
 }
 
 Codigo de error: 200:”Página funcionando correctamente”.
@@ -35,7 +35,23 @@ Codigo de error: 802:”Unable to connect to database”
 
 <?php  
 
- public static function encode($value, $options = 0) {
+public static function traerJson(){
+	
+	//traigo request
+	$json_params = file_get_contents("php://input");
+
+	//decodifico
+	$result = json_decode($json_params);
+
+    //si no hay errores lo devuelvo
+	if($result) {
+		return $result;
+	}
+
+	throw new Exception('800');
+}
+
+public static function encode($value, $options = 0) {
 	$result = json_encode($value, $options);
 
 	if($result)  {
@@ -44,23 +60,13 @@ Codigo de error: 802:”Unable to connect to database”
 
 	throw new Exception('800');
 
-	}
-
-public static function decode($json) {
-    $result = json_decode($json);
-
-    if($result) {
-        return $result;
-    }
-
-    throw new Exception('800');
 }
 
 public static function connect(){
-	$connection = new mysqli('universys.site', 'apholos_dba', 'dbainub', 'apholos_ligaub');
+	$connection = new mysqli('universys.site', 'apholos_dba', 'dbainub', 'apholos_universys');
 
 	if ($mysqli->connect_errno) {
-	    throw new Exception('802');
+		throw new Exception('802');
 	}
 
 	return $connection;
@@ -71,7 +77,7 @@ public static function chequeoVersion($conexion, $versionAChequear){
 	$result = $conexion->query("SELECT version FROM api_version WHERE fecha_hasta IS NULL");
 
 	if ($conexion->connect_errno) {
-	    throw new Exception('802');
+		throw new Exception('802');
 	}
 
 	if ($result->num_rows == 1) {
@@ -88,7 +94,7 @@ public static function validoCredenciales($conexion, $usuario, $contraseña){
 	$result = $conexion->query("SELECT * FROM Usuarios WHERE usuario = " . $usuario . " and contraseña = " . $contraseña);
 
 	if ($conexion->connect_errno) {
-	    throw new Exception('802');
+		throw new Exception('802');
 	}
 
 	if ($result->num_rows == 1) {
@@ -101,20 +107,29 @@ public static function validoCredenciales($conexion, $usuario, $contraseña){
 }
 
 public static function traigoDatos($conexion, $idUsuario){
-	if ($result = $conexion->query("SELECT * FROM Usuarios where usuario=" . $idUsuario)) {
-		while($row = $result->fetch_array(MYSQL_ASSOC)) {
-			$myArray[] = $row;
-		}
+	$result = $conexion->query("SELECT * FROM Usuarios where usuario=" . $idUsuario)
+
+	if ($conexion->connect_errno) {
+		throw new Exception('802');
+	}
+
+	while($row = $result->fetch_array(MYSQL_ASSOC)) {
+		$myArray[] = $row;
+	}
+
+	return $myArray;
+
+}
+
+public static function armarSalida($misDatos, $codigoSalida){
+
 }
 
 
 try {
 	
 	//recibo json
-	$json_params = file_get_contents("php://input");
-
-	//decodifico
-	$miJson = decode($json_params);
+	$miJson = traerJson();
 
 	//chequeo id sesion
 	if (isset($miJson["sesion"])) {
