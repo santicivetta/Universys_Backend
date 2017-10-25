@@ -5,5 +5,6 @@
 
 define('apiNoCompatible', '1500');
 define('sesionInexistente', '1501');
-define('errorConexion','802');
+define('errorConexionBase','802');
+define('diasSesiones','4');
 ?>
