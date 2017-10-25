@@ -1,12 +1,12 @@
 <?php
 
-include ('validarSesion.php');
-include ('defines.php');
+include_once ('validarSesion.php');
+include_once ('defines.php');
 
 function connect(){
 	$connection = new mysqli(hostBase, usuarioBase, contraseñaBase, nombreBase);
 
-	if ($mysqli->connect_errno) {
+	if ($connection->connect_errno) {
 	    throw new Exception('802');
 	}
 

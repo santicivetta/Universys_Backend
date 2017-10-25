@@ -1,6 +1,6 @@
 <?php
 
-include ('defines.php');
+include_once ('defines.php');
 
 function validarSesion($conexion, $sesion){
 	$query='SELECT u.usuario,r.tabla,s.fechaAlta
