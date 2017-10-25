@@ -35,7 +35,7 @@ Codigo de error: 802:”Unable to connect to database”
 
 <?php  
 
-public static function traerJson(){
+function traerJson(){
 	
 	//traigo request
 	$json_params = file_get_contents("php://input");
@@ -51,7 +51,7 @@ public static function traerJson(){
 	throw new Exception('800');
 }
 
-public static function encode($value, $options = 0) {
+function encode($value, $options = 0) {
 	$result = json_encode($value, $options);
 
 	if($result)  {
@@ -62,17 +62,17 @@ public static function encode($value, $options = 0) {
 
 }
 
-public static function connect(){
+function connect(){
 	$connection = new mysqli('universys.site', 'apholos_dba', 'dbainub', 'apholos_universys');
 
-	if ($mysqli->connect_errno) {
+	if ($connection->connect_errno) {
 		throw new Exception('802');
 	}
 
 	return $connection;
 }
 
-public static function chequeoVersion($conexion, $versionAChequear){
+function chequeoVersion($conexion, $versionAChequear){
 
 	$result = $conexion->query("SELECT version FROM api_version WHERE fecha_hasta IS NULL");
 
@@ -81,7 +81,7 @@ public static function chequeoVersion($conexion, $versionAChequear){
 	}
 
 	if ($result->num_rows == 1) {
-		$row = $result->fetch_array(MYSQL_ASSOC);
+		$row = $result->fetch_array(MYSQLI_ASSOC);
 		return ($row["version"] == $versionAChequear);
 	} else {
 		throw new Exception('1500');
@@ -89,16 +89,20 @@ public static function chequeoVersion($conexion, $versionAChequear){
 
 }
 
-public static function validoCredenciales($conexion, $usuario, $contraseña){
+function validoCredenciales($conexion, $usuario, $contraseña){
 	
-	$result = $conexion->query("SELECT * FROM Usuarios WHERE usuario = " . $usuario . " and contraseña = " . $contraseña);
+	
+	$query = "SELECT * FROM Usuarios WHERE usuario = '" . $usuario . "' and contraseña = '" . $contraseña ."'";
+	
+	$result = $conexion->query($query);
 
 	if ($conexion->connect_errno) {
 		throw new Exception('802');
 	}
-
+	var_dump($result);
 	if ($result->num_rows == 1) {
-		$row = $result->fetch_array(MYSQL_ASSOC);
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+		var_dump($row);
 		return $row["usuario"];
 	} else {
 		throw new Exception('680');
@@ -106,14 +110,14 @@ public static function validoCredenciales($conexion, $usuario, $contraseña){
 
 }
 
-public static function traigoDatos($conexion, $idUsuario){
-	$result = $conexion->query("SELECT * FROM Usuarios where usuario=" . $idUsuario)
+function traigoDatos($conexion, $idUsuario){
+	$result = $conexion->query("SELECT * FROM Usuarios where usuario='" . $idUsuario."'");
 
 	if ($conexion->connect_errno) {
 		throw new Exception('802');
 	}
 
-	while($row = $result->fetch_array(MYSQL_ASSOC)) {
+	while($row = $result->fetch_array(MYSQLI_ASSOC)) {
 		$myArray[] = $row;
 	}
 
@@ -121,7 +125,7 @@ public static function traigoDatos($conexion, $idUsuario){
 
 }
 
-public static function armarSalida($misDatos, $codigoSalida){
+function armarSalida($misDatos, $codigoSalida){
 
 }
 
@@ -132,7 +136,7 @@ try {
 	$miJson = traerJson();
 
 	//chequeo id sesion
-	if (isset($miJson["sesion"])) {
+	if (isset($miJson["idSesion"])) {
 		throw new Exception("799");	
 	}
 
@@ -140,10 +144,10 @@ try {
 	$conexion = connect();
 
 	//chequeo version
-	chequeoVersion($conexion, $request["apiVer"]);
+	chequeoVersion($conexion, $miJson["apiVer"]);
 
 	//valido credenciales
-	$idUsuario = validoCredenciales($conexion, $request["mail"], $request["password"]);
+	$idUsuario = validoCredenciales($conexion, $miJson["mail"], md5($miJson["password"]);
 
 	$datosUsuario = traigoDatos($conexion, $idUsuario);
 
