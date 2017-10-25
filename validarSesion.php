@@ -19,7 +19,7 @@ function validarSesion($conexion, $sesion){
 	if ($result->num_rows != 1)
 		throw new Exception('1501');
 
-	$row = $result->fetch_array(MYSQL_ASSOC);
+	$row = $result->fetch_array(MYSQLI_ASSOC);
 
 	$fecha = new DateTime($row['fechaAlta']);
 	$fecha->add(new DateInterval('P' . diasSesiones . 'D'));
