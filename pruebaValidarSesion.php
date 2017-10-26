@@ -18,7 +18,9 @@ function connect(){
 
 try{
 $conexion = connect();
-validarSesion($conexion,1);
+$datosUsuario=validarSesion($conexion,2);
+echo $datosUsuario['usuario'];
+echo $datosUsuario['tabla'];
 } 
 catch (Exception $e) {
     echo 'Excepción capturada: ',  $e->getMessage(), "\n";

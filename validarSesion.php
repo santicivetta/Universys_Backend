@@ -13,19 +13,53 @@ function validarSesion($conexion, $sesion){
 	$result = $conexion->query($query);
 
 	if ($conexion->connect_errno)
-	    throw new Exception('802');
+	    throw new Exception(errorConexionBase);
 
 
 	if ($result->num_rows != 1)
-		throw new Exception('1501');
+		throw new Exception(sesionInexistente);
 
 	$row = $result->fetch_array(MYSQLI_ASSOC);
 
 	$fecha = new DateTime($row['fechaAlta']);
-	$fecha->add(new DateInterval('P' . diasSesiones . 'D'));
-	echo $fecha->format('Y-m-d') . "\n";
+	if($fecha->format('Y-m-d')!=date("Y-m-d")){
+		$fecha->add(new DateInterval('P' . diasSesiones . 'D'));
+		if ($fecha->format('Y-m-d')>=date("Y-m-d")){
+			//echo "actualizo sesion " . $sesion;
+			actualizarFechaSesion($conexion,$sesion);
+		}else{
+			//echo "elimino sesion " . $sesion;
+			eliminarSesion($conexion,$sesion);
+			throw new Exception(sesionVencida);
+		}
+	}	
+	return array('usuario'=>$row['usuario'],'tabla'=>$row['tabla']);
+}
 
-	//*return array('usuario'=>$row['usuario'],'tabla'=>$row['tabla']);
+function actualizarFechaSesion($conexion,$sesion){
+	$query='UPDATE Sesiones SET fechaAlta=curdate() WHERE idSesion="' . $sesion . '"';
+	$result = $conexion->query($query);
+
+	if ($conexion->connect_errno)
+	    throw new Exception(errorConexionBase);
+
+	var_dump($conexion->affected_rows);
+
+	if ($conexion->affected_rows != 1)
+		throw new Exception(sesionInexistente);
+
+}
+
+function eliminarSesion($conexion,$sesion){
+	$query='DELETE FROM Sesiones WHERE idSesion="' . $sesion . '"';
+	$result = $conexion->query($query);
+
+	if ($conexion->connect_errno)
+	    throw new Exception(errorConexionBase);
+
+
+	if ($conexion->affected_rows != 1)
+		throw new Exception(sesionInexistente);
 }
 
 ?>
