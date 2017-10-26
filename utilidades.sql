@@ -19,18 +19,22 @@ INSERT INTO Usuarios values
 ("bedel.gato@comunidad.ub.edu.ar",md5("contraseñabedel"),3);
 
 TRUNCATE TABLE Sesiones;
-INSERT INTO Sesiones(usuario) values
-("santiago.civetta@comunidad.ub.edu.ar"),
-("gaston.bodeman@comunidad.ub.edu.ar"),
-("andres.didier@comunidad.ub.edu.ar");
+INSERT INTO Sesiones(usuario,fechaAlta) values
+("santiago.civetta@comunidad.ub.edu.ar",curdate()),
+("gaston.bodeman@comunidad.ub.edu.ar",'2017-10-23'),
+("andres.didier@comunidad.ub.edu.ar",'2017-10-10');
 
-SELECT u.usuario,r.tabla
+SELECT u.usuario,r.tabla,s.fechaAlta
 FROM 	Sesiones s,
 		Usuarios u,
 		Roles r
 WHERE 	s.usuario=u.usuario
 and		u.idRol=r.idRol
-and s.idSesion=1;
+and s.idSesion=2;
+
+UPDATE Sesiones SET fechaAlta='2017-10-25' WHERE idSesion="2";
+
+select * from Sesiones;
 
 
 
