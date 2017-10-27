@@ -32,24 +32,8 @@ Codigo de error: 799:”Error: Sesión duplicada”
 Codigo de error: 800:”Error: Unexpected error”
 Codigo de error: 801:”Invalid JSON request”
 Codigo de error: 802:”Unable to connect to database”
-
+  
 <?php  
-
-function traerJson(){
-	
-	//traigo request
-	$json_params = file_get_contents("php://input");
-
-	//decodifico
-	$result = json_decode($json_params);
-
-    //si no hay errores lo devuelvo
-	if($result) {
-		return $result;
-	}
-
-	throw new Exception('800');
-}
 
 function encode($value, $options = 0) {
 	$result = json_encode($value, $options);
@@ -92,18 +76,29 @@ function chequeoVersion($conexion, $versionAChequear){
 function validoCredenciales($conexion, $usuario, $contraseña){
 	
 	
-	$query = "SELECT * FROM Usuarios WHERE usuario = '" . $usuario . "' and contraseña = '" . $contraseña ."'";
+	$query = "SELECT * FROM Usuarios WHERE usuario = '" . $usuario . "' and contraseña = '" . md5($contraseña) ."'";
 	
+	/*
+	echo "<br>";
+	echo $query;
+	echo "<br>";
+	echo $contrasenia;
+	*/
+	//var_dump($conexion);
+	$conexion->query("SET NAMES 'utf8'");
 	$result = $conexion->query($query);
 
 	if ($conexion->connect_errno) {
 		throw new Exception('802');
 	}
-	var_dump($result);
+//	var_dump($result);
 	if ($result->num_rows == 1) {
 		$row = $result->fetch_array(MYSQLI_ASSOC);
-		var_dump($row);
+//		var_dump($row);
+		
+//		echo "contraseña en la base: " . $row["contraseña"];
 		return $row["usuario"];
+		
 	} else {
 		throw new Exception('680');
 	}
@@ -131,12 +126,13 @@ function armarSalida($misDatos, $codigoSalida){
 
 
 try {
-	
-	//recibo json
-	$miJson = traerJson();
+
+	if (!(isset($_POST))) {
+		throw new Exception("800");	
+	}
 
 	//chequeo id sesion
-	if (isset($miJson["idSesion"])) {
+	if (isset($_POST["idSesion"])) {
 		throw new Exception("799");	
 	}
 
@@ -144,10 +140,10 @@ try {
 	$conexion = connect();
 
 	//chequeo version
-	chequeoVersion($conexion, $miJson["apiVer"]);
+	chequeoVersion($conexion, $_POST["apiVer"]);
 
 	//valido credenciales
-	$idUsuario = validoCredenciales($conexion, $miJson["mail"], md5($miJson["password"]);
+	$idUsuario = validoCredenciales($conexion, $_POST["mail"], $_POST["password"]);
 
 	$datosUsuario = traigoDatos($conexion, $idUsuario);
 
