@@ -12,4 +12,5 @@ define('usuarioBase','apholos_dba');
 define('contraseñaBase','dbainub');
 define('nombreBase','apholos_universys');
 define('sesionVencida','1502');
+define('credencialesIncorrectas','680');
 ?>
