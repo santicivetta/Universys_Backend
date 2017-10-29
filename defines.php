@@ -14,4 +14,7 @@ define('nombreBase','apholos_universys');
 define('sesionVencida','1502');
 define('credencialesIncorrectas','680');
 define('nombreBaseTesting','apholos_universys_testing');
+
+define('apiVersionActual','1.0');
+define('errorInesperado','800');
 ?>
