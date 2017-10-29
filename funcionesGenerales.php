@@ -18,23 +18,13 @@ function connect($testing=False){
 }
 
 
-function chequeoVersion($conexion, $versionAChequear){
-
-	$result = $conexion->query("SELECT version FROM api_version WHERE fecha_hasta IS NULL");
-
-	if ($conexion->connect_errno) {
-		throw new Exception(errorConexionBase);
-	}
-
-	if ($result->num_rows == 1) {
-		$row = $result->fetch_array(MYSQLI_ASSOC);
-		if ($row["version"] == $versionAChequear){
-			return True
+function VersionDeAPICorrecta($versionAChequear){
+	if ($versionAChequear == apiVersionActual) {
+		return True
 		}
 	} else {
 		throw new Exception(apiNoCompatible);
 	}
-
 }
 
 function validoCredenciales($conexion, $usuario, $contraseña){
