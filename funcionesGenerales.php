@@ -2,8 +2,11 @@
 
 include_once ('defines.php');
 
-function connect(){
-	$connection = new mysqli(hostBase, usuarioBase, contraseñaBase, nombreBase);
+function connect($testing=False){
+	if($testing)
+		$connection = new mysqli(hostBase, usuarioBase, contraseñaBase, nombreBaseTesting);
+	else
+		$connection = new mysqli(hostBase, usuarioBase, contraseñaBase, nombreBase);
 
 	if ($connection->connect_errno) {
 		throw new Exception(errorConexionBase);
@@ -121,8 +124,6 @@ function actualizarFechaSesion($conexion,$sesion){
 
 	if ($conexion->connect_errno)
 	    throw new Exception(errorConexionBase);
-
-	var_dump($conexion->affected_rows);
 
 	if ($conexion->affected_rows != 1)
 		throw new Exception(sesionInexistente);
