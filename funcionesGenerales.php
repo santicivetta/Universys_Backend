@@ -12,6 +12,8 @@ function connect($testing=False){
 		throw new Exception(errorConexionBase);
 	}
 
+	$connection->query("SET NAMES 'utf8'");
+
 	return $connection;
 }
 
@@ -26,7 +28,9 @@ function chequeoVersion($conexion, $versionAChequear){
 
 	if ($result->num_rows == 1) {
 		$row = $result->fetch_array(MYSQLI_ASSOC);
-		return ($row["version"] == $versionAChequear);
+		if ($row["version"] == $versionAChequear){
+			return True
+		}
 	} else {
 		throw new Exception(apiNoCompatible);
 	}
@@ -35,29 +39,18 @@ function chequeoVersion($conexion, $versionAChequear){
 
 function validoCredenciales($conexion, $usuario, $contraseña){
 	
-	
 	$query = "SELECT * FROM Usuarios WHERE usuario = '" . $usuario . "' and contraseña = '" . md5($contraseña) ."'";
 	
-	/*
-	echo "<br>";
-	echo $query;
-	echo "<br>";
-	echo $contrasenia;
-	*/
-	//var_dump($conexion);
-	$conexion->query("SET NAMES 'utf8'");
 	$result = $conexion->query($query);
 
 	if ($conexion->connect_errno) {
 		throw new Exception(errorConexionBase);
 	}
-//	var_dump($result);
+
 	if ($result->num_rows == 1) {
 		$row = $result->fetch_array(MYSQLI_ASSOC);
-//		var_dump($row);
 		
-//		echo "contraseña en la base: " . $row["contraseña"];
-		return $row["usuario"];
+		return True;
 		
 	} else {
 		throw new Exception(credencialesIncorrectas);
@@ -65,23 +58,21 @@ function validoCredenciales($conexion, $usuario, $contraseña){
 
 }
 
-function traigoDatos($conexion, $idUsuario){
-	$result = $conexion->query("SELECT * FROM Usuarios where usuario='" . $idUsuario."'");
-
-	if ($conexion->connect_errno) {
-		throw new Exception(errorConexionBase);
-	}
-
-	while($row = $result->fetch_array(MYSQLI_ASSOC)) {
-		$myArray[] = $row;
-	}
-
-	return $myArray;
-
-}
-
 function armarSalida($misDatos, $codigoSalida){
 
+	$result = json_encode(array
+							("direccionServidor"=>"http://universys.site/login", 
+							 "apiVer"=>apiVersionActual,
+							 "errorId"=>$codigoSalida,
+							 $misDatos)
+						);
+
+    //si no hay errores lo devuelvo
+	if($result) {
+		return $result;
+	}
+
+	throw new Exception(errorInesperado);
 }
 
 function validarSesion($conexion, $sesion){
