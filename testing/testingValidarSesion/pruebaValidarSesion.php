@@ -19,10 +19,11 @@ if ($eCon==null){
 		$datosUsuario=validarSesion($conexion,1);
 	} catch (Exception $e1){}
 
+	echo ">> <strong>ValidarSesion</strong> </br>";
 	if ($e1->getMessage()==sesionVencida)
-		echo "Prueba1 OK";
+		echo "Prueba1 OK </br>";
 	else
-		echo "Prueba1 FAIL";
+		echo "Prueba1 FAIL </br>";
 
 	//PRUEBA 2
 	try {
@@ -31,9 +32,9 @@ if ($eCon==null){
 
 	if ( ($datosUsuario['usuario']=='gaston.bodeman@comunidad.ub.edu.ar') and
 		 ($datosUsuario['tabla']=='Alumnos') ) 
-		echo "Prueba2 OK";
+		echo "Prueba2 OK </br>";
 	else
-		echo "Prueba2 FAIL";
+		echo "Prueba2 FAIL </br>";
 
 	//PRUEBA 2
 	try {
@@ -42,8 +43,8 @@ if ($eCon==null){
 
 	if ( ($datosUsuario['usuario']=='andres.didier@comunidad.ub.edu.ar') and
 		 ($datosUsuario['tabla']=='Profesores') ) 
-		echo "Prueba3 OK";
+		echo "Prueba3 OK </br>";
 	else
-		echo "Prueba3 FAIL";
+		echo "Prueba3 FAIL </br>";
 }
 ?>

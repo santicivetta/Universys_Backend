@@ -20,8 +20,7 @@ function connect($testing=False){
 
 function VersionDeAPICorrecta($versionAChequear){
 	if ($versionAChequear == apiVersionActual) {
-		return True
-		}
+		return True;
 	} else {
 		throw new Exception(apiNoCompatible);
 	}
