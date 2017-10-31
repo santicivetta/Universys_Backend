@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <script type="text/javascript" src="./jquery.js"></script>
+  <link rel="stylesheet" type="text/css" href="./estilo.css">
+</head>
+<body>
+  <header>
+    <h1>Testing Unitario Backend</h1>
+  </header>
+  <main>
+    <div id="botones">
+      <h2>Testings Disponibles</h2>
+      <button id="validarSesion">ValidarSesion</button>
+      <button id="todos"><strong>Todos</strong></button>
+    </div>
+    <div id="datos">
+      <h2>Estado</h2>
+      <div id="estado">
+      </div>
+      <h2>Consola</h2>
+      <div id="respuesta">
+      </div>
+      <button id="limpiarConsola">Limpiar</button>
+    </div>
+  </main>
+  <footer>
+    Universys - Backend - Universidad de Belgrano
+  </footer>
+
+</body>
+<script>
+  $(document).on('ready',function(){
+    
+    $('#validarSesion').click(function(){
+      cargando();
+      validarSesion(true);
+    });
+
+    $('#limpiarConsola').click(function(){
+      $('#respuesta').empty();
+    });
+
+    $('#todos').click(function(){
+      cargando();
+      validarSesion(true);
+    });
+
+  });
+
+  function validarSesion(estado=false){
+    if (estado){
+      var hola;
+    }
+    $.ajax({url: "testingValidarSesion/pruebaValidarSesion.php", 
+        type: 'POST', 
+        data: { },
+       success : function(respuesta) {
+         $('#respuesta').append(respuesta);
+         if (estado){
+            finalizado();
+         }
+       }
+     })
+  }
+
+  function cargando(){
+    $("#estado").css("background", "#FFD889");
+    $("#respuesta").css("background", "#FFD889");
+    $('#estado').text("Cargando");
+  }
+
+  function finalizado(){
+    $("#estado").css("background", "green");
+    $("#respuesta").css("background", "green");
+    $('#estado').text("Finalizado");
+  }
+</script>
+</html>
+
