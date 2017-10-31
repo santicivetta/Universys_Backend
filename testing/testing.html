@@ -13,6 +13,7 @@
     <div id="botones">
       <h2>Testings Disponibles</h2>
       <button id="validarSesion">ValidarSesion</button>
+      <button id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
       <h2>Estado</h2>
@@ -39,6 +40,11 @@
 
     $('#limpiarConsola').click(function(){
       $('#respuesta').empty();
+    });
+
+    $('#todos').click(function(){
+      cargando();
+      validarSesion(true);
     });
 
   });
