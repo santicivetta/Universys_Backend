@@ -17,4 +17,6 @@ define('nombreBaseTesting','apholos_universys_testing');
 
 define('apiVersionActual','1.0');
 define('errorInesperado','800');
+
+define('sesionDuplicada','799');
 ?>
