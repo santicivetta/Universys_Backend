@@ -50,12 +50,19 @@ function validoCredenciales($conexion, $usuario, $contraseña){
 
 function armarSalida($misDatos, $codigoSalida){
 
-	$result = json_encode(array
+	if (isset($misDatos)){
+		$result = json_encode(array_merge(array
 							("direccionServidor"=>"http://universys.site/login", 
 							 "apiVer"=>apiVersionActual,
-							 "errorId"=>$codigoSalida,
-							 $misDatos)
+							 "errorId"=>$codigoSalida), $misDatos)
 						);
+	} else {
+		$result = json_encode(array
+							("direccionServidor"=>"http://universys.site/login", 
+							 "apiVer"=>apiVersionActual,
+							 "errorId"=>$codigoSalida)
+						);
+	}
 
     //si no hay errores lo devuelvo
 	if($result) {
@@ -64,6 +71,32 @@ function armarSalida($misDatos, $codigoSalida){
 
 	throw new Exception(errorInesperado);
 }
+
+function altaSesion($conexion, $idUsuario){
+	
+	$query = "INSERT INTO Sesiones(usuario,fechaAlta) values ('".$idUsuario."',CURDATE())";
+
+	$result = $conexion->query($query);
+
+	if ($conexion->connect_errno) {
+		throw new Exception(errorConexionBase);
+	}
+
+	$query = "SELECT idSesion from Sesiones WHERE Usuario = '".$idUsuario."'";
+
+	$result = $conexion->query($query);
+
+	if ($result->num_rows == 1) {
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+		
+		return $row["idSesion"];
+		
+	} else {
+		throw new Exception(errorInesperado);
+	}
+
+}
+
 
 function validarSesion($conexion, $sesion){
 	$query='SELECT u.usuario,r.tabla,s.fechaAlta

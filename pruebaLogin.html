@@ -9,8 +9,8 @@
             type: 'POST', 
             data: { "apiVer" : "1.0", "idSesion" : "",  "mail" : "santiago.civetta@comunidad.ub.edu.ar",  "password" : "contraseñasantiago" },
            success : function(response, status) {
-              document.getElementById("salida").innerHTML = JSON.stringify(JSON.parse(response),null,2);
-             //alert("Data:\n " + response + "\nStatus: " + status);
+              //document.getElementById("salida").innerHTML = JSON.stringify(JSON.parse(response),null,2);
+             alert("Data:\n " + response + "\nStatus: " + status);
            }
          }
          );

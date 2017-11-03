@@ -36,7 +36,7 @@ function traerDatos($conexion, $idUsuario){
 
 	$row2 = $result2->fetch_array(MYSQLI_ASSOC);
 
-	return array($row2, "rol"=> $row["descripcion"]);
+	return array_merge($row2, array("rol"=> $row["descripcion"]));
 }
 
 
@@ -50,23 +50,27 @@ try {
 		throw new Exception(sesionDuplicada);	
 	}
 
-	//conecto a la base
-	$conexion = connect();
-
 	//chequeo version
 	VersionDeAPICorrecta($_POST["apiVer"]);
+
+	//conecto a la base
+	$conexion = connect();
 
 	//valido credenciales
 	validoCredenciales($conexion, $_POST["mail"], $_POST["password"]);
 
+//cuando se da de alta? cuando se actualiza?
+	$idSesion = altaSesion($conexion, $_POST["mail"]);
+
 	$datosUsuario = traerDatos($conexion, $_POST["mail"]);
-	
-	/*---------------FALTA VER FORMATO DE JSON Y AGREGAR IDSESION A LA SALIDA--------------*/
-	$arraySalida = armarSalida($datosUsuario, "200");
+
+	//tengo que mergear la idSesion con los datosUsuarios
+
+	$arraySalida = armarSalida(array("usuario"=>$datosUsuario), "200");
 
 	$conexion->close();
 
-	echo json_encode($arraySalida);
+	echo $arraySalida;
 
 } catch (Exception $e) {
 
@@ -76,7 +80,7 @@ try {
 		$conexion->close();
 	}
 
-	echo json_encode($arraySalida);
+	echo $arraySalida;
 
 }
 
