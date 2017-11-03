@@ -59,14 +59,15 @@ try {
 	//valido credenciales
 	validoCredenciales($conexion, $_POST["mail"], $_POST["password"]);
 
-//cuando se da de alta? cuando se actualiza?
 	$idSesion = altaSesion($conexion, $_POST["mail"]);
 
 	$datosUsuario = traerDatos($conexion, $_POST["mail"]);
 
 	//tengo que mergear la idSesion con los datosUsuarios
 
-	$arraySalida = armarSalida(array("usuario"=>$datosUsuario), "200");
+	$salidaFinal = array_merge($datosUsuario, array("idSesion"=> $idSesion));
+
+	$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200");
 
 	$conexion->close();
 

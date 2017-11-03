@@ -74,15 +74,17 @@ function armarSalida($misDatos, $codigoSalida){
 
 function altaSesion($conexion, $idUsuario){
 	
-	$query = "INSERT INTO Sesiones(usuario,fechaAlta) values ('".$idUsuario."',CURDATE())";
-
-	$result = $conexion->query($query);
-
 	if ($conexion->connect_errno) {
 		throw new Exception(errorConexionBase);
 	}
 
-	$query = "SELECT idSesion from Sesiones WHERE Usuario = '".$idUsuario."'";
+	$query = "INSERT INTO Sesiones(usuario,fechaAlta) values ('".$idUsuario."',CURDATE())";
+
+	if ($conexion->query($query) === FALSE) {
+		throw new Exception(errorConexionBase);
+	};
+
+	$query = "SELECT max(idSesion) as idSesion from Sesiones WHERE Usuario = '".$idUsuario."'";
 
 	$result = $conexion->query($query);
 
@@ -92,7 +94,7 @@ function altaSesion($conexion, $idUsuario){
 		return $row["idSesion"];
 		
 	} else {
-		throw new Exception(errorInesperado);
+		throw new Exception(errorConexionBase);
 	}
 
 }
