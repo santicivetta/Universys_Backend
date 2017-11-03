@@ -1,75 +1,87 @@
-
-
------------------Login:
-Request de Login:
-Dirección URL del Servidor: http://universys.site/login
-Ejemplo de JSON:
-{
-	“apiVer” : ”1.0”,
-	“idSesion” : “32695”
-	“mail” : ”pepito@gmail.com”,
-	“password” : “pepitokpo” 
-}
-
-Respuesta del Login:
-Ejemplo de JSON:
-{
-	“direccionServidor” : “x”
-	“apiVer” : ”1.0”,
-	“errorId” : “404”,
-	“usuario” : { 
-	“nombre” : ”Diego”,
-	“apellido” : “Maradona”,
-	“fNac” : “3/8/01”,
-	“tipo” : “alumno”
-}
-}
-
-Codigo de error: 200:”Página funcionando correctamente”.
-Codigo de error: 680:”Usuario o mail incorrecto”
-Codigo de error: 777:”Contraseña incorrecta”
-Codigo de error: 799:”Error: Sesión duplicada”
-Codigo de error: 800:”Error: Unexpected error”
-Codigo de error: 801:”Invalid JSON request”
-Codigo de error: 802:”Unable to connect to database”
-  
 <?php  
+
+
+include_once ('defines.php');
+include_once ('funcionesGenerales.php');
+
+function traerDatos($conexion, $idUsuario){
+
+	$query="SELECT u.usuario,r.tabla, r.descripcion
+			FROM 	Usuarios u,
+					Roles r
+			WHERE 	u.idRol=r.idRol
+			and u.usuario = '" .$idUsuario."'";
+
+	$result = $conexion->query($query);
+
+	if ($conexion->connect_errno)
+	    throw new Exception(errorConexionBase);
+
+
+	if ($result->num_rows != 1)
+		throw new Exception(sesionInexistente);
+
+	$row = $result->fetch_array(MYSQLI_ASSOC);
+
+	$query2 = "SELECT nombre, apellido FROM " . $row["tabla"] . " where mail = '" . $row["usuario"] . "'";
+
+	$result2 = $conexion->query($query2);
+
+	if ($conexion->connect_errno) {
+		throw new Exception(errorConexionBase);
+	}
+
+	if ($result2->num_rows != 1)
+		throw new Exception(sesionInexistente);
+
+	$row2 = $result2->fetch_array(MYSQLI_ASSOC);
+
+	return array_merge($row2, array("rol"=> $row["descripcion"]));
+}
+
 
 try {
 
 	if (!(isset($_POST))) {
-		throw new Exception("800");	
+		throw new Exception(errorInesperado);	
 	}
 
-	//chequeo id sesion
-	if (isset($_POST["idSesion"])) {
-		throw new Exception("799");	
+	if (!(empty($_POST["idSesion"]))) {
+		throw new Exception(sesionDuplicada);	
 	}
+
+	//chequeo version
+	VersionDeAPICorrecta($_POST["apiVer"]);
 
 	//conecto a la base
 	$conexion = connect();
 
-	//chequeo version
-	chequeoVersion($conexion, $_POST["apiVer"]);
-
 	//valido credenciales
-	$idUsuario = validoCredenciales($conexion, $_POST["mail"], $_POST["password"]);
+	validoCredenciales($conexion, $_POST["mail"], $_POST["password"]);
 
-	$datosUsuario = traigoDatos($conexion, $idUsuario);
+	$idSesion = altaSesion($conexion, $_POST["mail"]);
 
-	$arraySalida = armarSalida($datosUsuario, "200");
+	$datosUsuario = traerDatos($conexion, $_POST["mail"]);
 
-	$mysqli->close();
+	//tengo que mergear la idSesion con los datosUsuarios
 
-	echo json_encode($arraySalida);
+	$salidaFinal = array_merge($datosUsuario, array("idSesion"=> $idSesion));
+
+	$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200");
+
+	$conexion->close();
+
+	echo $arraySalida;
 
 } catch (Exception $e) {
 
 	$arraySalida = armarSalida(null, $e->getMessage());
 
-	$mysqli->close();
+	if (isset($conexion)) {
+		$conexion->close();
+	}
 
-	echo json_encode($arraySalida);
+	echo $arraySalida;
 
 }
 
