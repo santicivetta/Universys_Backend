@@ -14,13 +14,15 @@ catch (Exception $eCon) {
 }
 
 if ($eCon==null){
+	
+	echo ">> <strong>ValidarSesion</strong> </br>";
+
 	//PRUEBA 1
 	$e1=null;
 	try {
 		$datosUsuario=validarSesion($conexion,1);
 	} catch (Exception $e1){}
 
-	echo ">> <strong>ValidarSesion</strong> </br>";
 	if ($e1!=null and $e1->getMessage()==sesionVencida)
 		echo "Prueba1 OK </br>";
 	else
