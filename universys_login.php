@@ -59,9 +59,9 @@ function doLogin($data) {
 		//valido credenciales
 		validoCredenciales($conexion, $data["mail"], $data["password"]);
 
-		$idSesion = altaSesion($conexion, $data["mail"]);
-
 		$datosUsuario = traerDatos($conexion, $data["mail"]);
+
+		$idSesion = altaSesion($conexion, $data["mail"]);
 
 		//tengo que mergear la idSesion con los datosUsuarios
 
