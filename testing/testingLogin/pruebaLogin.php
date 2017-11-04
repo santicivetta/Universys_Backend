@@ -13,14 +13,13 @@ ejecutarSQL('login.sql',$conexion);
 catch (Exception $eCon) {
     echo 'Excepción capturada: ',  $e->getMessage(), "\n";
 }
-
 if($eCon==null){
   echo ">> <strong>Login</strong> </br>";
 
   //PRUEBA 1
   $datos= doLogin(["apiVer" => apiVersionActual, "idSesion" => "", "mail" => "santiago.civetta@comunidad.ub.edu.ar", "password" => "contraseñasantiago"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200' and $datosParseados["usuario"]["idSesion"]=='1'){
+  if($datosParseados["errorId"]=='200' and $datosParseados["usuario"]["idSesion"]>'0'){
     echo "Prueba1 OK </br>";
   }
   else{
@@ -40,7 +39,6 @@ if($eCon==null){
   //PRUEBA 3
   $datos= doLogin(["apiVer" => apiVersionActual, "idSesion" => "", "mail" => "gaston.bodeman@comunidad.ub.edu.ar", "password" => "contraseñagaston"]);
   $datosParseados= json_decode($datos, true);
-  var_dump($datosParseados);
   if($datosParseados["errorId"]==personaInexistente){
     echo "Prueba3 OK </br>";
   }
@@ -51,14 +49,15 @@ if($eCon==null){
   //PRUEBA 4
   $datos= doLogin(["apiVer" => apiVersionActual, "idSesion" => "", "mail" => "andres.didier@comunidad.ub.edu.ar", "password" => "contraseñaandres"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200' and $datosParseados["usuario"]["idSesion"]=='1'){
-    echo "Prueba1 OK </br>";
+  if($datosParseados["errorId"]=='200' and $datosParseados["usuario"]["idSesion"]>'0'){
+    echo "Prueba4 OK </br>";
   }
   else{
-    echo "Prueba1 FAIL </br>";
+    echo "Prueba4 FAIL </br>";
   }
-
 }
+mysqli_close($conexion);
+
 ?>
 
 
