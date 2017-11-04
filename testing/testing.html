@@ -12,8 +12,9 @@
   <main>
     <div id="botones">
       <h2>Testings Disponibles</h2>
-      <button id="validarSesion">ValidarSesion</button>
-      <button id="todos"><strong>Todos</strong></button>
+      <button name="button" id="validarSesion">ValidarSesion</button>
+      <button name="button" id="login">Login</button>
+      <button name="button" id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
       <h2>Estado</h2>
@@ -22,7 +23,7 @@
       <h2>Consola</h2>
       <div id="respuesta">
       </div>
-      <button id="limpiarConsola">Limpiar</button>
+      <button name="button" id="limpiarConsola">Limpiar</button>
     </div>
   </main>
   <footer>
@@ -38,21 +39,24 @@
       validarSesion(true);
     });
 
+    $('#login').click(function(){
+      cargando();
+      login(true);
+    });
+
     $('#limpiarConsola').click(function(){
       $('#respuesta').empty();
     });
 
     $('#todos').click(function(){
       cargando();
-      validarSesion(true);
+      validarSesion();
+      login(true);
     });
 
   });
 
   function validarSesion(estado=false){
-    if (estado){
-      var hola;
-    }
     $.ajax({url: "testingValidarSesion/pruebaValidarSesion.php", 
         type: 'POST', 
         data: { },
@@ -65,13 +69,42 @@
      })
   }
 
+  function login(estado=false){
+  $.ajax({url: "testingLogin/pruebaLogin.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if (estado){
+          finalizado();
+       }
+     }
+   })
+  }
+
+  function deshabilitarTodos(){
+    var botones=document.getElementsByName("button");
+    for (var a=0; a<botones.length; a++){
+      botones[a].disabled=true;
+    }
+  }
+
+  function habilitarTodos(){
+    var botones=document.getElementsByName("button");
+    for (var a=0; a<botones.length; a++){
+      botones[a].disabled=false;
+    }
+  }
+
   function cargando(){
+    deshabilitarTodos();
     $("#estado").css("background", "#FFD889");
     $("#respuesta").css("background", "#FFD889");
     $('#estado').text("Cargando");
   }
 
   function finalizado(){
+    habilitarTodos();
     $("#estado").css("background", "green");
     $("#respuesta").css("background", "green");
     $('#estado').text("Finalizado");
