@@ -64,27 +64,34 @@ try {
 		throw new Exception(permisosErroneos);	
 	}
 
-
-
-
-
 	if strcmp($_POST["operacion"], "alta") {
-		/*
-		“operacion” :”modificacion”,
-		“nombre” : “Gaston”,
-		“apellido” : “Bodeman”,
-		“fnac” : “20/09/1994”,
-		“genero” : “masculino”,
-		“domicilio” : “blanco encalada 4892”,
-		“telefono” : “45228786”,
-		“matrícula“ : “03140”,
-		“mail” : ”pepito@gmail.com”
-		*/
 
+		if strcmp($_POST["tabla"],"administrador") {
+			$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+			
+			$query2 = "INSERT INTO Administradores(legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
 
-		//----------$query = "INSERT INTO Usuarios(usuario,fechaAlta) values ('".$idUsuario."',CURDATE())";
+		}
+
+		if strcmp($_POST["tabla"],"profesor") {
+			$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+
+			$query2 = "INSERT INTO Profesores(legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+
+		}
+
+		if strcmp($_POST["tabla"],"alumno") {
+			$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+
+			$query2 = "INSERT INTO Alumnos(matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+
+		}
 
 		if ($conexion->query($query) === FALSE) {
+			throw new Exception(errorConexionBase);
+		};
+
+		if ($conexion->query($query2) === FALSE) {
 			throw new Exception(errorConexionBase);
 		};
 
@@ -93,7 +100,20 @@ try {
 
 	if strcmp($_POST["operacion"], "modificacion") {
 
-		//----------$query = "INSERT INTO Usuarios(usuario,fechaAlta) values ('".$idUsuario."',CURDATE())";
+		if strcmp($_POST["tabla"],"administrador") {
+			$query = "UPDATE Administradores SET (legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+
+		}
+
+		if strcmp($_POST["tabla"],"profesor") {
+			$query = "UPDATE Profesores SET (legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+
+		}
+
+		if strcmp($_POST["tabla"],"alumno") {
+			$query = "UPDATE Alumnos SET (matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+
+		}
 
 		if ($conexion->query($query) === FALSE) {
 			throw new Exception(errorConexionBase);
@@ -105,7 +125,10 @@ try {
 
 	if strcmp($_POST["operacion"], "baja") {
 
-		//----------$query = "INSERT INTO Usuarios(usuario,fechaAlta) values ('".$idUsuario."',CURDATE())";
+		$query = '	UPDATE 
+					FROM Usuarios 
+					SET fechaHasta = curdate()
+					WHERE mail = "' . $_POST["mail"] . '"';
 
 		if ($conexion->query($query) === FALSE) {
 			throw new Exception(errorConexionBase);
@@ -114,9 +137,6 @@ try {
 		$arraySalida = armarSalida(null, "200");
 		
 	}
-
-
-	//$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200");
 
 	$conexion->close();
 

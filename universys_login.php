@@ -10,6 +10,7 @@ function traerDatos($conexion, $idUsuario){
 			FROM 	Usuarios u,
 					Roles r
 			WHERE 	u.idRol=r.idRol
+			and u.fechaHasta is null
 			and u.usuario = '" .$idUsuario."'";
 
 	$result = $conexion->query($query);

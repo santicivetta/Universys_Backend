@@ -60,6 +60,7 @@ mail varchar(50) not null unique,
 fechaNacimiento date,
 genero varchar(20),
 domicilio varchar(100),
+telefono varchar(100),
 PRIMARY KEY (legajo),
 FOREIGN KEY (mail) REFERENCES Usuarios(usuario));
 
