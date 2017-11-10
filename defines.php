@@ -16,7 +16,6 @@ define('credencialesIncorrectas','680');
 define('nombreBaseTesting','apholos_universys_testing');
 define('apiVersionActual','1.0');
 define('errorInesperado','800');
-
 define('sesionDuplicada','799');
 define('usuarioInexistente','1503');
 define('personaInexistente','1504');
