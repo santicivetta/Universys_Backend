@@ -14,6 +14,7 @@
       <h2>Testings Disponibles</h2>
       <button name="button" id="validarSesion">ValidarSesion</button>
       <button name="button" id="login">Login</button>
+      <button name="button" id="logout">Logout</button>
       <button name="button" id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
@@ -44,33 +45,70 @@
       login(true);
     });
 
+    $('#logout').click(function(){
+      cargando();
+      logout(true);
+    });
+
     $('#limpiarConsola').click(function(){
       $('#respuesta').empty();
     });
 
     $('#todos').click(function(){
       cargando();
-      validarSesion();
-      login(true);
+      validarSesion(false, function() {
+        login(false,function(){
+          logout(true);
+        });
+      });
     });
 
   });
 
-  function validarSesion(estado=false){
+  function validarSesion(estado=false, onComplete=null){
     $.ajax({url: "testingValidarSesion/pruebaValidarSesion.php", 
         type: 'POST', 
         data: { },
        success : function(respuesta) {
          $('#respuesta').append(respuesta);
+         if(onComplete) {
+          onComplete();
+         }
          if (estado){
             finalizado();
          }
+       },
+       error : function(respuesta) {
+        if(onComplete) {
+          onComplete();
+        }
        }
      })
   }
 
-  function login(estado=false){
+  function login(estado=false,onComplete=null){
   $.ajax({url: "testingLogin/pruebaLogin.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+     }
+   })
+  }
+
+  function logout(estado=false){
+  $.ajax({url: "testingLogout/pruebaLogout.php", 
       type: 'POST', 
       data: { },
      success : function(respuesta) {
