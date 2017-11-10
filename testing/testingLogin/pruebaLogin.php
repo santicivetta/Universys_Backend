@@ -11,7 +11,7 @@ $conexion = connect(True);
 ejecutarSQL('login.sql',$conexion);
 } 
 catch (Exception $eCon) {
-    echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+    echo 'Excepción capturada: ',  $eCon->getMessage(), "\n";
 }
 if($eCon==null){
   echo ">> <strong>Login</strong> </br>";
