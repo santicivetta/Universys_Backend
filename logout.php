@@ -19,7 +19,7 @@ function doLogout($data) {
 
 		eliminarSesion($conexion,$data['idSesion']);
 
-		$arraySalida = armarSalida(null, "200");
+		$arraySalida = armarSalida(null, "200","/logout");
 
 		$conexion->close();
 
@@ -27,7 +27,7 @@ function doLogout($data) {
 
 	} catch (Exception $e) {
 
-		$arraySalida = armarSalida(null, $e->getMessage());
+		$arraySalida = armarSalida(null, $e->getMessage(),"/logout");
 
 		if (isset($conexion)) {
 			$conexion->close();

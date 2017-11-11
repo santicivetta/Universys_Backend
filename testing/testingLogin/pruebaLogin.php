@@ -3,7 +3,7 @@ define('TESTING', 'true');
 include_once (__DIR__ . '/../funcionesTesting.php');
 include_once (__DIR__ . '/../../funcionesGenerales.php');
 include_once (__DIR__ . '/../../defines.php');
-include_once ('../../universys_login.php');
+include_once ('../../login.php');
 
 $eCon=null;
 try{
