@@ -68,7 +68,7 @@ FOREIGN KEY (mail) REFERENCES Usuarios(usuario));
 
 DROP TABLE IF EXISTS Carreras;
 CREATE TABLE Carreras(
-idCarrera int not null unique,
+idCarrera int not null unique auto_increment,
 nombre varchar(100) not null,
 PRIMARY KEY (idCarrera));
 
@@ -82,7 +82,7 @@ FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 
 DROP TABLE IF EXISTS Materias;
 CREATE TABLE Materias(
-idMateria int not null unique,
+idMateria int not null unique auto_increment,
 nombre varchar(50) not null unique,
 PRIMARY KEY (idMateria));
 
