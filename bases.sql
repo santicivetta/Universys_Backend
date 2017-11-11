@@ -70,6 +70,7 @@ DROP TABLE IF EXISTS Carreras;
 CREATE TABLE Carreras(
 idCarrera int not null unique auto_increment,
 nombre varchar(100) not null,
+fechaHasta date default null,
 PRIMARY KEY (idCarrera));
 
 DROP TABLE IF EXISTS MateriasXCarreras;
@@ -84,6 +85,7 @@ DROP TABLE IF EXISTS Materias;
 CREATE TABLE Materias(
 idMateria int not null unique auto_increment,
 nombre varchar(50) not null unique,
+fechaHasta date default null,
 PRIMARY KEY (idMateria));
 
 DROP TABLE IF EXISTS Catedras;
@@ -105,6 +107,7 @@ horario varchar(100),
 parcial datetime,
 recuperatorio1 datetime,
 recuperatorio2 datetime,
+fechaHasta date default null,
 PRIMARY KEY(idCursada),
 FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
 FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
