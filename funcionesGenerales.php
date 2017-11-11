@@ -98,7 +98,7 @@ function validarSesion($conexion, $sesion){
 					Roles r
 			WHERE 	s.usuario=u.usuario
 			and		u.idRol=r.idRol
-			and u.fechaHasta is null
+			and u.fechaHasta IS NULL
 			and s.idSesion="' . $sesion . '"';
 	$result = $conexion->query($query);
 
