@@ -3,7 +3,7 @@
 include_once ('defines.php');
 
 function connect($testing=False){
-	if($testing)
+	if($testing || defined('TESTING'))
 		$connection = new mysqli(hostBase, usuarioBase, contraseñaBase, nombreBaseTesting);
 	else
 		$connection = new mysqli(hostBase, usuarioBase, contraseñaBase, nombreBase);

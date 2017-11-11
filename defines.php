@@ -20,4 +20,6 @@ define('errorInesperado','800');
 define('permisosErroneos','1002');
 
 define('sesionDuplicada','799');
+define('usuarioInexistente','1503');
+define('personaInexistente','1504');
 ?>

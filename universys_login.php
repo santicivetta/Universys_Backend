@@ -12,7 +12,6 @@ function traerDatos($conexion, $idUsuario){
 			WHERE 	u.idRol=r.idRol
 			and u.fechaHasta is null
 			and u.usuario = '" .$idUsuario."'";
-
 	$result = $conexion->query($query);
 
 	if ($conexion->connect_errno)
@@ -20,7 +19,7 @@ function traerDatos($conexion, $idUsuario){
 
 
 	if ($result->num_rows != 1)
-		throw new Exception(sesionInexistente);
+		throw new Exception(usuarioInexistente);
 
 	$row = $result->fetch_array(MYSQLI_ASSOC);
 
@@ -33,7 +32,7 @@ function traerDatos($conexion, $idUsuario){
 	}
 
 	if ($result2->num_rows != 1)
-		throw new Exception(sesionInexistente);
+		throw new Exception(personaInexistente);
 
 	$row2 = $result2->fetch_array(MYSQLI_ASSOC);
 
@@ -41,49 +40,56 @@ function traerDatos($conexion, $idUsuario){
 }
 
 
-try {
+function doLogin($data) {
+	try {
 
-	if (!(isset($_POST))) {
-		throw new Exception(errorInesperado);	
-	}
+		if (!(isset($data))) {
+			throw new Exception(errorInesperado);	
+		}
 
-	if (!(empty($_POST["idSesion"]))) {
-		throw new Exception(sesionDuplicada);	
-	}
+		if (!(empty($data["idSesion"]))) {
+			throw new Exception(sesionDuplicada);	
+		}
 
-	//chequeo version
-	VersionDeAPICorrecta($_POST["apiVer"]);
+		//chequeo version
+		VersionDeAPICorrecta($data["apiVer"]);
 
-	//conecto a la base
-	$conexion = connect();
+		//conecto a la base
+		$conexion = connect();
 
-	//valido credenciales
-	validoCredenciales($conexion, $_POST["mail"], $_POST["password"]);
+		//valido credenciales
+		validoCredenciales($conexion, $data["mail"], $data["password"]);
 
-	$idSesion = altaSesion($conexion, $_POST["mail"]);
+		$datosUsuario = traerDatos($conexion, $data["mail"]);
 
-	$datosUsuario = traerDatos($conexion, $_POST["mail"]);
+		$idSesion = altaSesion($conexion, $data["mail"]);
 
-	//tengo que mergear la idSesion con los datosUsuarios
+		//tengo que mergear la idSesion con los datosUsuarios
 
-	$salidaFinal = array_merge($datosUsuario, array("idSesion"=> $idSesion));
+		$salidaFinal = array_merge($datosUsuario, array("idSesion"=> $idSesion));
 
 	$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200", "http://universys.site/login");
 
-	$conexion->close();
+		$conexion->close();
 
-	echo $arraySalida;
+		return $arraySalida;
 
-} catch (Exception $e) {
+	} catch (Exception $e) {
 
 	$arraySalida = armarSalida(null, $e->getMessage(), "http://universys.site/login");
 
-	if (isset($conexion)) {
-		$conexion->close();
+		if (isset($conexion)) {
+			$conexion->close();
+		}
+
+		return $arraySalida;
+
 	}
+}
 
-	echo $arraySalida;
-
+if(!defined('TESTING'))
+{
+	return doLogin($_POST);
 }
 
 ?>
