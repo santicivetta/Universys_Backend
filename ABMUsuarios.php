@@ -46,10 +46,6 @@ try {
 		throw new Exception(errorInesperado);	
 	}
 
-	if (!(empty($_POST["idSesion"]))) {
-		throw new Exception(sesionDuplicada);	
-	}
-
 	//chequeo version
 	VersionDeAPICorrecta($_POST["apiVer"]);
 
