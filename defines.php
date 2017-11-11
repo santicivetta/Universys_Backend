@@ -22,4 +22,7 @@ define('permisosErroneos','1002');
 define('sesionDuplicada','799');
 define('usuarioInexistente','1503');
 define('personaInexistente','1504');
+
+define('carreraInexistente','1003');
+define('materiaInexistente','1004');
 ?>
