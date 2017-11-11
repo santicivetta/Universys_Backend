@@ -68,7 +68,7 @@ function doLogin($data) {
 
 		$salidaFinal = array_merge($datosUsuario, array("idSesion"=> $idSesion));
 
-	$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200", "http://universys.site/login");
+		$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200", "http://universys.site/login");
 
 		$conexion->close();
 

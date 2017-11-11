@@ -39,119 +39,124 @@ function traerDatos($conexion, $idUsuario){
 	return array_merge($row2, array("rol"=> $row["descripcion"]));
 }
 
+function doABMUsuarios($data) {
+	try {
 
-try {
+		if (!(isset($_POST))) {
+			throw new Exception(errorInesperado);	
+		}
 
-	if (!(isset($_POST))) {
-		throw new Exception(errorInesperado);	
-	}
+		if (!(empty($_POST["idSesion"]))) {
+			throw new Exception(sesionDuplicada);	
+		}
 
-	if (!(empty($_POST["idSesion"]))) {
-		throw new Exception(sesionDuplicada);	
-	}
+		//chequeo version
+		VersionDeAPICorrecta($_POST["apiVer"]);
 
-	//chequeo version
-	VersionDeAPICorrecta($_POST["apiVer"]);
+		//conecto a la base
+		$conexion = connect();
 
-	//conecto a la base
-	$conexion = connect();
+		//valido sesion
+		$miUsuario = validarSesion($conexion, $_POST["idSesion"]);
 
-	//valido sesion
-	$miUsuario = validarSesion($conexion, $_POST["idSesion"]);
+		//valido permisos
+		if strcmp($miUsuario["tabla"],"Administradores") != 0 {
+			throw new Exception(permisosErroneos);	
+		}
 
-	//valido permisos
-	if strcmp($miUsuario["tabla"],"Administradores") != 0 {
-		throw new Exception(permisosErroneos);	
-	}
+		if strcmp($_POST["operacion"], "alta") {
 
-	if strcmp($_POST["operacion"], "alta") {
+			if strcmp($_POST["tabla"],"administrador") {
+				$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+				
+				$query2 = "INSERT INTO Administradores(legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
 
-		if strcmp($_POST["tabla"],"administrador") {
-			$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+			}
+
+			if strcmp($_POST["tabla"],"profesor") {
+				$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+
+				$query2 = "INSERT INTO Profesores(legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+
+			}
+
+			if strcmp($_POST["tabla"],"alumno") {
+				$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+
+				$query2 = "INSERT INTO Alumnos(matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+
+			}
+
+			if ($conexion->query($query) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
+
+			if ($conexion->query($query2) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
+
+			$arraySalida = armarSalida(null, "200");
+		}
+
+		if strcmp($_POST["operacion"], "modificacion") {
+
+			if strcmp($_POST["tabla"],"administrador") {
+				$query = "UPDATE Administradores SET (legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."') WHERE mail = '" . $_POST["mail"] . "'";
+
+			}
+
+			if strcmp($_POST["tabla"],"profesor") {
+				$query = "UPDATE Profesores SET (legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')WHERE mail = '" . $_POST["mail"] . "'";
+
+			}
+
+			if strcmp($_POST["tabla"],"alumno") {
+				$query = "UPDATE Alumnos SET (matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')WHERE mail = '" . $_POST["mail"] . "'";
+
+			}
+
+			if ($conexion->query($query) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
+
+			$arraySalida = armarSalida(null, "200");
 			
-			$query2 = "INSERT INTO Administradores(legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
-
 		}
 
-		if strcmp($_POST["tabla"],"profesor") {
-			$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
+		if strcmp($_POST["operacion"], "baja") {
 
-			$query2 = "INSERT INTO Profesores(legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
+			$query = '	UPDATE 
+						FROM Usuarios 
+						SET fechaHasta = curdate()
+						WHERE mail = "' . $_POST["mail"] . '"';
 
+			if ($conexion->query($query) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
+
+			$arraySalida = armarSalida(null, "200");
+			
 		}
 
-		if strcmp($_POST["tabla"],"alumno") {
-			$query = "INSERT INTO Usuarios(usuario, contraseña, fechaAlta) values ('".$_POST["mail"]."','".$_POST["contrasena"]."',CURDATE())";
-
-			$query2 = "INSERT INTO Alumnos(matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) values ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
-
-		}
-
-		if ($conexion->query($query) === FALSE) {
-			throw new Exception(errorConexionBase);
-		};
-
-		if ($conexion->query($query2) === FALSE) {
-			throw new Exception(errorConexionBase);
-		};
-
-		$arraySalida = armarSalida(null, "200");
-	}
-
-	if strcmp($_POST["operacion"], "modificacion") {
-
-		if strcmp($_POST["tabla"],"administrador") {
-			$query = "UPDATE Administradores SET (legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
-
-		}
-
-		if strcmp($_POST["tabla"],"profesor") {
-			$query = "UPDATE Profesores SET (legajo, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
-
-		}
-
-		if strcmp($_POST["tabla"],"alumno") {
-			$query = "UPDATE Alumnos SET (matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio) = ('".$_POST["identificador"]."','".$_POST["documento"]."','".$_POST["nombre"]."','".$_POST["apellido"]."','".$_POST["mail"]."','".$_POST["fnac"]."','".$_POST["genero"]."','".$_POST["domicilio"]."')";
-
-		}
-
-		if ($conexion->query($query) === FALSE) {
-			throw new Exception(errorConexionBase);
-		};
-
-		$arraySalida = armarSalida(null, "200");
-		
-	}
-
-	if strcmp($_POST["operacion"], "baja") {
-
-		$query = '	UPDATE 
-					FROM Usuarios 
-					SET fechaHasta = curdate()
-					WHERE mail = "' . $_POST["mail"] . '"';
-
-		if ($conexion->query($query) === FALSE) {
-			throw new Exception(errorConexionBase);
-		};
-
-		$arraySalida = armarSalida(null, "200");
-		
-	}
-
-	$conexion->close();
-
-	echo $arraySalida;
-
-} catch (Exception $e) {
-
-	$arraySalida = armarSalida(null, $e->getMessage());
-
-	if (isset($conexion)) {
 		$conexion->close();
+
+		return $arraySalida;
+
+	} catch (Exception $e) {
+
+		$arraySalida = armarSalida(null, $e->getMessage());
+
+		if (isset($conexion)) {
+			$conexion->close();
+		}
+
+		return $arraySalida;
+
 	}
-
-	echo $arraySalida;
-
 }
 
+if(!defined('TESTING'))
+{
+	return doABMUsuarios($_POST);
+}
 ?>
