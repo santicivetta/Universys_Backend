@@ -32,10 +32,6 @@ function validoCredenciales($conexion, $usuario, $contraseña){
 	
 	$result = $conexion->query($query);
 
-	if ($conexion->connect_errno) {
-		throw new Exception(errorConexionBase);
-	}
-
 	if ($result->num_rows == 1) {
 		$row = $result->fetch_array(MYSQLI_ASSOC);
 		
@@ -47,17 +43,17 @@ function validoCredenciales($conexion, $usuario, $contraseña){
 
 }
 
-function armarSalida($misDatos, $codigoSalida){
+function armarSalida($misDatos, $codigoSalida, $direccionServidor){
 
 	if (isset($misDatos)){
 		$result = json_encode(array_merge(array
-							("direccionServidor"=>"http://universys.site/login", 
+							("direccionServidor"=>$direccionServidor, 
 							 "apiVer"=>apiVersionActual,
 							 "errorId"=>$codigoSalida), $misDatos)
 						);
 	} else {
 		$result = json_encode(array
-							("direccionServidor"=>"http://universys.site/login", 
+							("direccionServidor"=>$direccionServidor, 
 							 "apiVer"=>apiVersionActual,
 							 "errorId"=>$codigoSalida)
 						);
@@ -72,10 +68,6 @@ function armarSalida($misDatos, $codigoSalida){
 }
 
 function altaSesion($conexion, $idUsuario){
-	
-	if ($conexion->connect_errno) {
-		throw new Exception(errorConexionBase);
-	}
 
 	$query = "INSERT INTO Sesiones(usuario,fechaAlta) values ('".$idUsuario."',CURDATE())";
 
@@ -106,12 +98,9 @@ function validarSesion($conexion, $sesion){
 					Roles r
 			WHERE 	s.usuario=u.usuario
 			and		u.idRol=r.idRol
+			and u.fechaHasta is null
 			and s.idSesion="' . $sesion . '"';
 	$result = $conexion->query($query);
-
-	if ($conexion->connect_errno)
-	    throw new Exception(errorConexionBase);
-
 
 	if ($result->num_rows != 1)
 		throw new Exception(sesionInexistente);
@@ -122,11 +111,13 @@ function validarSesion($conexion, $sesion){
 	if($fecha->format('Y-m-d')!=date("Y-m-d")){
 		$fecha->add(new DateInterval('P' . diasSesiones . 'D'));
 		if ($fecha->format('Y-m-d')>=date("Y-m-d")){
-			//echo "actualizo sesion " . $sesion;
+
 			actualizarFechaSesion($conexion,$sesion);
+
 		}else{
-			//echo "elimino sesion " . $sesion;
+
 			eliminarSesion($conexion,$sesion);
+
 			throw new Exception(sesionVencida);
 		}
 	}	
@@ -135,26 +126,29 @@ function validarSesion($conexion, $sesion){
 
 function actualizarFechaSesion($conexion,$sesion){
 	$query='UPDATE Sesiones SET fechaAlta=curdate() WHERE idSesion="' . $sesion . '"';
-	$result = $conexion->query($query);
 
-	if ($conexion->connect_errno)
+	if (!($conexion->query($query))){
 	    throw new Exception(errorConexionBase);
+	}
 
 	if ($conexion->affected_rows != 1)
 		throw new Exception(sesionInexistente);
+
+	return True;
 
 }
 
 function eliminarSesion($conexion,$sesion){
 	$query='DELETE FROM Sesiones WHERE idSesion="' . $sesion . '"';
-	$result = $conexion->query($query);
 
-	if ($conexion->connect_errno)
+	if (!($conexion->query($query))){
 	    throw new Exception(errorConexionBase);
-
+	}
 
 	if ($conexion->affected_rows != 1)
 		throw new Exception(sesionInexistente);
+
+	return True;
 }
 
 ?>

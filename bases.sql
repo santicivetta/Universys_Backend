@@ -5,6 +5,7 @@ CREATE TABLE Usuarios(
 usuario varchar(50) not null unique,
 contraseña varchar(50) not null,
 idRol int not null,
+fechaHasta date default null,
 PRIMARY KEY(usuario),
 FOREIGN KEY(idrol) REFERENCES Roles(idRol));
 
@@ -59,6 +60,7 @@ mail varchar(50) not null unique,
 fechaNacimiento date,
 genero varchar(20),
 domicilio varchar(100),
+telefono varchar(100),
 PRIMARY KEY (legajo),
 FOREIGN KEY (mail) REFERENCES Usuarios(usuario));
 

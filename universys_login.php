@@ -10,6 +10,7 @@ function traerDatos($conexion, $idUsuario){
 			FROM 	Usuarios u,
 					Roles r
 			WHERE 	u.idRol=r.idRol
+			and u.fechaHasta is null
 			and u.usuario = '" .$idUsuario."'";
 	$result = $conexion->query($query);
 
@@ -67,7 +68,7 @@ function doLogin($data) {
 
 		$salidaFinal = array_merge($datosUsuario, array("idSesion"=> $idSesion));
 
-		$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200");
+	$arraySalida = armarSalida(array("usuario"=>$salidaFinal), "200", "http://universys.site/login");
 
 		$conexion->close();
 
@@ -75,7 +76,7 @@ function doLogin($data) {
 
 	} catch (Exception $e) {
 
-		$arraySalida = armarSalida(null, $e->getMessage());
+	$arraySalida = armarSalida(null, $e->getMessage(), "http://universys.site/login");
 
 		if (isset($conexion)) {
 			$conexion->close();
