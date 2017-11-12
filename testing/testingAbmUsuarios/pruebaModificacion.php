@@ -14,12 +14,12 @@ catch (Exception $eCon) {
     echo 'Excepción capturada: ',  $eCon->getMessage(), "\n";
 }
 if($eCon==null){
-  echo ">> <strong>Alta Usuario</strong> </br>";
+  echo ">> <strong>Modificacion Usuario</strong> </br>";
 
   //PRUEBA 1
-  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "alta", "nombre" => "Gaston", "apellido" => "Bodeman","documento" => "37213234", "fnac" => "1994-09-20","genero" => "Masculino","domicilio" => "Blanco Encalada 4892","telefono" => "45228786","identificador" => "3140","mail" => "gaston.bodeman@comunidad.ub.edu.ar","contraseña" => "contraseñagaston","rol" => "Alumno"]);
+  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "modificacion", "nombre" => "Gaston", "apellido" => "Bodeman","documento" => "37213234", "fnac" => "1994-09-20","genero" => "Masculino","domicilio" => "Blanco Encalada 4892","telefono" => "45228786","mail" => "gaston.bodeman@comunidad.ub.edu.ar","contraseña" => "contraseñagaston"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200'){
+  if($datosParseados["errorId"]==usuarioInexistente){
     echo "Prueba1 OK </br>";
   }
   else{
@@ -27,9 +27,9 @@ if($eCon==null){
   }
 
   //PRUEBA 2
-  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "alta", "nombre" => "Gaston", "apellido" => "Bodeman","documento" => "37213234", "fnac" => "1994-09-20","genero" => "Masculino","domicilio" => "Blanco Encalada 4892","telefono" => "45228786","identificador" => "3140","mail" => "gaston.bodeman@comunidad.ub.edu.ar","contraseña" => "contraseñagaston","rol" => "Alumno"]);
+  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "modificacion", "nombre" => "Santi", "apellido" => "Cive","documento" => "12345678", "fnac" => "1994-09-10","genero" => "Masculino","domicilio" => "Cabildo 321","telefono" => "123456789","mail" => "santiago.civetta@comunidad.ub.edu.ar","contraseña" => "contraseñanueva"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]==usuarioDuplicado){
+  if($datosParseados["errorId"]=='200'){
     echo "Prueba2 OK </br>";
   }
   else{
@@ -37,7 +37,7 @@ if($eCon==null){
   }
 
   //PRUEBA 3
-  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "alta", "nombre" => "Santi", "apellido" => "Cive","documento" => "12345678", "fnac" => "1994-09-10","genero" => "Masculino","domicilio" => "Cabildo 321","telefono" => "123456789","identificador" => "3141","mail" => "santiago.civetta@comunidad.ub.edu.ar","contraseña" => "contraseñanueva","rol" => "Alumno"]);
+  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "modificacion", "nombre" => "Andi", "apellido" => "Didi","documento" => "123", "fnac" => "2004-09-10","genero" => "Indefinido","domicilio" => "Pampa y la via","telefono" => "987654321","mail" => "andres.didier@comunidad.ub.edu.ar","contraseña" => "contraseñanueva"]);
   $datosParseados= json_decode($datos, true);
   if($datosParseados["errorId"]=='200'){
     echo "Prueba3 OK </br>";
@@ -47,7 +47,7 @@ if($eCon==null){
   }
 
   //PRUEBA 4
-  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "2", "operacion" => "alta", "nombre" => "Santi", "apellido" => "Cive","documento" => "12345678", "fnac" => "1994-09-10","genero" => "Masculino","domicilio" => "Cabildo 321","telefono" => "123456789","identificador" => "3141","mail" => "santiago.civetta@comunidad.ub.edu.ar","contraseña" => "contraseñanueva","rol" => "Alumno"]);
+  $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "2", "operacion" => "modificacion", "nombre" => "Andi", "apellido" => "Didi","documento" => "123", "fnac" => "2004-09-10","genero" => "Indefinido","domicilio" => "Pampa y la via","telefono" => "987654321","mail" => "andres.didier@comunidad.ub.edu.ar","contraseña" => "contraseñanueva"]);
   $datosParseados= json_decode($datos, true);
   if($datosParseados["errorId"]==permisosErroneos){
     echo "Prueba4 OK </br>";
@@ -55,6 +55,7 @@ if($eCon==null){
   else{
     echo "Prueba4 FAIL </br>";
   }
+  
 }
 mysqli_close($conexion);
 
