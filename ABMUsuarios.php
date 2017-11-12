@@ -6,9 +6,13 @@ include_once ('funcionesGenerales.php');
 
 function doABMUsuarios($data) {
 	try {
-		if (!(isset($data))) {
+
+		if (!(isset($data)))
 			throw new Exception(errorInesperado);	
-		}
+		
+		//se valida que esten los campos generales
+		if ( !(isset($data['idSesion'])) or !(isset($data['apiVer'])) or !(isset($data['operacion'])) or !(isset($data['mail'])) )
+			throw new Exception(errorEnJson);	
 
 		//chequeo version
 		VersionDeAPICorrecta($data["apiVer"]);
@@ -37,6 +41,9 @@ function doABMUsuarios($data) {
 		}
 
 		if (strcmp($data["operacion"], "alta")==0) {
+
+			if ( !(isset($data['nombre'])) or !(isset($data['apellido'])) or !(isset($data['fnac'])) or !(isset($data['genero'])) or !(isset($data['domicilio'])) or !(isset($data['telefono'])) or !(isset($data['identificador'])) or !(isset($data['documento'])) or !(isset($data['contraseña'])) or !(isset($data['rol'])) )
+				throw new Exception(errorEnJson);	
 
 			if ($arrayUsuario->num_rows == 1){
 
@@ -87,9 +94,10 @@ function doABMUsuarios($data) {
 
 			}
 
-		}
+		}elseif (strcmp($data["operacion"], "modificacion")==0) {
 
-		if (strcmp($data["operacion"], "modificacion")==0) {
+			if ( !(isset($data['nombre'])) or !(isset($data['apellido'])) or !(isset($data['fnac'])) or !(isset($data['genero'])) or !(isset($data['domicilio'])) or !(isset($data['telefono'])) or !(isset($data['documento'])) or !(isset($data['contraseña'])) )
+				throw new Exception(errorEnJson);
 
 			if ($arrayUsuario->num_rows == 1){
 
@@ -108,9 +116,7 @@ function doABMUsuarios($data) {
 				throw new Exception(usuarioInexistente);
 			}
 			
-		}
-
-		if (strcmp($data["operacion"], "baja")==0) {
+		}elseif (strcmp($data["operacion"], "baja")==0) {
 
 			if ($arrayUsuario->num_rows == 1){
 
@@ -123,6 +129,8 @@ function doABMUsuarios($data) {
 			}else{
 				throw new Exception(usuarioInexistente);
 			}
+		}else{
+			throw new Exception(errorEnJson);
 		}
 
 		$arraySalida = armarSalida(null, "200","/ABMUsuarios");
