@@ -53,29 +53,29 @@ function doABMUsuarios($data) {
 				}
 			}else{
 
-				if (strcmp($data["rol"],"Administrador")==0) {
+				if (strcmp($data["rol"],"Administrador")==0)
+					$tabla="Administradores";
+				elseif (strcmp($data["rol"],"Profesor")==0)
+					$tabla="Administradores";
+				elseif (strcmp($data["rol"],"Alumno")==0)
+					$tabla="Alumnos";
+				else
+					throw new Exception(errorEnJson);
 
-					$query = "INSERT INTO Usuarios(usuario, contraseña, idRol, fechaHasta) values ('".$data["mail"]."',md5('".$data["contraseña"]."'),3,null)";
+				$query6='SELECT * FROM Roles WHERE tabla="' . $tabla . '"';
+				if (($arrayIdRol=$conexion->query($query6)) === FALSE) {
+					throw new Exception(errorConexionBase);
+				};
+
+				if ($arrayIdRol->num_rows == 1){
+					$idRol = $arrayIdRol->fetch_array(MYSQLI_ASSOC);
+				}else{
+					throw new Exception(errorInesperado);
+				}
+
+				$query = "INSERT INTO Usuarios(usuario, contraseña, idRol, fechaHasta) values ('".$data["mail"]."',md5('".$data["contraseña"]."')," . $idRol['idRol'] . ",null)";
 					
-					$query2 = "INSERT INTO Administradores(matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio,telefono) values ('".$data["identificador"]."','".$data["documento"]."','".$data["nombre"]."','".$data["apellido"]."','".$data["mail"]."','".$data["fnac"]."','".$data["genero"]."','".$data["domicilio"]."','".$data["telefono"]."')";
-
-				}
-
-				if (strcmp($data["rol"],"Profesor")==0) {
-
-					$query = "INSERT INTO Usuarios(usuario, contraseña, idRol, fechaHasta) values ('".$data["mail"]."',md5('".$data["contraseña"]."'),2,null)";
-
-					$query2 = "INSERT INTO Profesores(matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio,telefono) values ('".$data["identificador"]."','".$data["documento"]."','".$data["nombre"]."','".$data["apellido"]."','".$data["mail"]."','".$data["fnac"]."','".$data["genero"]."','".$data["domicilio"]."','".$data["telefono"]."')";
-
-				}
-
-				if (strcmp($data["rol"],"Alumno")==0) {
-
-					$query = "INSERT INTO Usuarios(usuario, contraseña, idRol, fechaHasta) values ('".$data["mail"]."',md5('".$data["contraseña"]."'),1,null)";
-
-					$query2 = "INSERT INTO Alumnos(matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio,telefono) values ('".$data["identificador"]."','".$data["documento"]."','".$data["nombre"]."','".$data["apellido"]."','".$data["mail"]."','".$data["fnac"]."','".$data["genero"]."','".$data["domicilio"]."','".$data["telefono"]."')";
-
-				}
+				$query2 = "INSERT INTO " . $tabla . "(matricula, documento, nombre, apellido, mail, fechaNacimiento, genero, domicilio,telefono) values ('".$data["identificador"]."','".$data["documento"]."','".$data["nombre"]."','".$data["apellido"]."','".$data["mail"]."','".$data["fnac"]."','".$data["genero"]."','".$data["domicilio"]."','".$data["telefono"]."')";
 
 				if ($conexion->query($query) === FALSE) {
 					throw new Exception(errorConexionBase);
