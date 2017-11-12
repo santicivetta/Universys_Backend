@@ -114,10 +114,7 @@ function doABMUsuarios($data) {
 
 			if ($arrayUsuario->num_rows == 1){
 
-				$query = '	UPDATE 
-							FROM Usuarios 
-							SET fechaHasta = curdate()
-							WHERE mail = "' . $data["mail"] . '"';
+				$query = 'UPDATE Usuarios SET fechaHasta = curdate() WHERE usuario = "' . $data["mail"] . '"';
 
 				if ($conexion->query($query) === FALSE) {
 					throw new Exception(errorConexionBase);
