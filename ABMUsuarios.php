@@ -82,48 +82,54 @@ function doABMUsuarios($data) {
 
 		if (strcmp($data["operacion"], "modificacion")==0) {
 
-			if (strcmp($miUsuario["tabla"],"administrador")) {
-				$query = 'UPDATE Administradores SET documento="' . $data['documento'] . '" , nombre="' . $data['nombre'] . '" , apellido="' . $data['apellido'] . '" , fechaNacimiento="' . $data['fnac'] . '" , genero="' . $data['genero'] . '" , domicilio="' . $data['domicilio'] . '" , telefono="' . $data['telefono'] . '" WHERE mail = "' . $data["mail"] . '"';
+			if ($arrayUsuario->num_rows == 1){
+				if (strcmp($miUsuario["tabla"],"administrador")) {
+					$query = 'UPDATE Administradores SET documento="' . $data['documento'] . '" , nombre="' . $data['nombre'] . '" , apellido="' . $data['apellido'] . '" , fechaNacimiento="' . $data['fnac'] . '" , genero="' . $data['genero'] . '" , domicilio="' . $data['domicilio'] . '" , telefono="' . $data['telefono'] . '" WHERE mail = "' . $data["mail"] . '"';
 
-				$query5 = 'UPDATE Usuarios set contraseña=md5("' . $data['contraseña'] . '") WHERE usuario = "' . $data["mail"] . '"';
+					$query5 = 'UPDATE Usuarios set contraseña=md5("' . $data['contraseña'] . '") WHERE usuario = "' . $data["mail"] . '"';
 
+				}
+
+				if (strcmp($miUsuario["tabla"],"profesor")) {
+					$query = 'UPDATE Profesores SET documento="' . $data['documento'] . '" , nombre="' . $data['nombre'] . '" , apellido="' . $data['apellido'] . '" , fechaNacimiento="' . $data['fnac'] . '" , genero="' . $data['genero'] . '" , domicilio="' . $data['domicilio'] . '" , telefono="' . $data['telefono'] . '" WHERE mail = "' . $data["mail"] . '"';
+
+					$query5 = 'UPDATE Usuarios set contraseña=md5("' . $data['contraseña'] . '") WHERE usuario = "' . $data["mail"] . '"';
+
+				}
+
+				if (strcmp($miUsuario["tabla"],"alumno")) {
+					$query = 'UPDATE Alumnos SET documento="' . $data['documento'] . '" , nombre="' . $data['nombre'] . '" , apellido="' . $data['apellido'] . '" , fechaNacimiento="' . $data['fnac'] . '" , genero="' . $data['genero'] . '" , domicilio="' . $data['domicilio'] . '" , telefono="' . $data['telefono'] . '" WHERE mail = "' . $data["mail"] . '"';
+
+					$query5 = 'UPDATE Usuarios set contraseña=md5("' . $data['contraseña'] . '") WHERE usuario = "' . $data["mail"] . '"';
+
+				}
+
+				if ($conexion->query($query) === FALSE) {
+					throw new Exception(errorConexionBase);
+				};
+
+				if ($conexion->query($query5) === FALSE) {
+					throw new Exception(errorConexionBase);
+				};
+			}else{
+				throw new Exception(usuarioInexistente);
 			}
-
-			if (strcmp($miUsuario["tabla"],"profesor")) {
-				$query = 'UPDATE Profesores SET documento="' . $data['documento'] . '" , nombre="' . $data['nombre'] . '" , apellido="' . $data['apellido'] . '" , fechaNacimiento="' . $data['fnac'] . '" , genero="' . $data['genero'] . '" , domicilio="' . $data['domicilio'] . '" , telefono="' . $data['telefono'] . '" WHERE mail = "' . $data["mail"] . '"';
-
-				$query5 = 'UPDATE Usuarios set contraseña=md5("' . $data['contraseña'] . '") WHERE usuario = "' . $data["mail"] . '"';
-
-			}
-
-			if (strcmp($miUsuario["tabla"],"alumno")) {
-				$query = 'UPDATE Alumnos SET documento="' . $data['documento'] . '" , nombre="' . $data['nombre'] . '" , apellido="' . $data['apellido'] . '" , fechaNacimiento="' . $data['fnac'] . '" , genero="' . $data['genero'] . '" , domicilio="' . $data['domicilio'] . '" , telefono="' . $data['telefono'] . '" WHERE mail = "' . $data["mail"] . '"';
-
-				$query5 = 'UPDATE Usuarios set contraseña=md5("' . $data['contraseña'] . '") WHERE usuario = "' . $data["mail"] . '"';
-
-			}
-
-			if ($conexion->query($query) === FALSE) {
-				throw new Exception(errorConexionBase);
-			};
-
-			if ($conexion->query($query5) === FALSE) {
-				throw new Exception(errorConexionBase);
-			};
 			
 		}
 
 		if (strcmp($data["operacion"], "baja")==0) {
+			if ($arrayUsuario->num_rows == 1){
+				$query = '	UPDATE 
+							FROM Usuarios 
+							SET fechaHasta = curdate()
+							WHERE mail = "' . $data["mail"] . '"';
 
-			$query = '	UPDATE 
-						FROM Usuarios 
-						SET fechaHasta = curdate()
-						WHERE mail = "' . $data["mail"] . '"';
-
-			if ($conexion->query($query) === FALSE) {
-				throw new Exception(errorConexionBase);
-			};
-			
+				if ($conexion->query($query) === FALSE) {
+					throw new Exception(errorConexionBase);
+				};
+			}else{
+				throw new Exception(usuarioInexistente);
+			}
 		}
 
 		$arraySalida = armarSalida(null, "200","/ABMUsuarios");
