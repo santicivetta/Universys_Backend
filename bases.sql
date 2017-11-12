@@ -69,7 +69,7 @@ FOREIGN KEY (mail) REFERENCES Usuarios(usuario));
 DROP TABLE IF EXISTS Carreras;
 CREATE TABLE Carreras(
 idCarrera int not null unique auto_increment,
-nombre varchar(100) not null,
+nombre varchar(100) not null unique,
 fechaHasta date default null,
 PRIMARY KEY (idCarrera));
 
