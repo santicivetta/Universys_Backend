@@ -15,6 +15,7 @@
       <button name="button" id="validarSesion">ValidarSesion</button>
       <button name="button" id="login">Login</button>
       <button name="button" id="logout">Logout</button>
+      <button name="button" id="altaUsuario">AltaUsuario</button>
       <button name="button" id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
@@ -50,6 +51,11 @@
       logout(true);
     });
 
+    $('#altaUsuario').click(function(){
+      cargando();
+      altaUsuario(true);
+    });
+
     $('#limpiarConsola').click(function(){
       $('#respuesta').empty();
     });
@@ -58,7 +64,9 @@
       cargando();
       validarSesion(false, function() {
         login(false,function(){
-          logout(true);
+          logout(false,function(){
+            altaUsuario(true);
+          });
         });
       });
     });
@@ -107,16 +115,45 @@
    })
   }
 
-  function logout(estado=false){
+  function logout(estado=false,onComplete=null){
   $.ajax({url: "testingLogout/pruebaLogout.php", 
       type: 'POST', 
       data: { },
      success : function(respuesta) {
        $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
        if (estado){
           finalizado();
        }
-     }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function altaUsuario(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmUsuarios/pruebaAlta.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
    })
   }
 
