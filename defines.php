@@ -22,6 +22,12 @@ define('permisosErroneos','1002');
 define('sesionDuplicada','799');
 define('usuarioInexistente','1503');
 define('personaInexistente','1504');
+
+define('carreraDuplicada','1701');
+define('carreraInexistente','1701');
+
+define('salidaExitosa','200');
+
 define('usuarioDuplicado','1505');
 define('errorEnJson','1506');
 ?>

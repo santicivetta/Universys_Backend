@@ -4,122 +4,166 @@
 include_once ('defines.php');
 include_once ('funcionesGenerales.php');
 
-function traerDatos($conexion, $idUsuario){
-
-	$query="SELECT u.usuario,r.tabla, r.descripcion
-	FROM 	Usuarios u,
-	Roles r
-	WHERE 	u.idRol=r.idRol
-	and u.usuario = '" .$idUsuario."'";
-
-	$result = $conexion->query($query);
-
-	if ($conexion->connect_errno)
-		throw new Exception(errorConexionBase);
-
-
-	if ($result->num_rows != 1)
-		throw new Exception(sesionInexistente);
-
-	$row = $result->fetch_array(MYSQLI_ASSOC);
-
-	$query2 = "SELECT nombre, apellido FROM " . $row["tabla"] . " where mail = '" . $row["usuario"] . "'";
-
-	$result2 = $conexion->query($query2);
-
-	if ($conexion->connect_errno) {
-		throw new Exception(errorConexionBase);
-	}
-
-	if ($result2->num_rows != 1)
-		throw new Exception(sesionInexistente);
-
-	$row2 = $result2->fetch_array(MYSQLI_ASSOC);
-
-	return array_merge($row2, array("rol"=> $row["descripcion"]));
-}
-
 function doABMCarreras($data) {
 	try {
 
-		if (!(isset($_POST))) {
+		if (!(isset($data))) {
 			throw new Exception(errorInesperado);	
 		}
 
+		if ( empty($data['idSesion']) or empty($data['apiVer']) or empty($data['operacion']) ) 
+			throw new Exception(errorEnJson);	
+
 	//chequeo version
-		VersionDeAPICorrecta($_POST["apiVer"]);
+		VersionDeAPICorrecta($data["apiVer"]);
 
 	//conecto a la base
 		$conexion = connect();
 
 	//valido sesion
-		$miUsuario = validarSesion($conexion, $_POST["idSesion"]);
+		$miUsuario = validarSesion($conexion, $data["idSesion"]);
 
 	//valido permisos
 		if strcmp($miUsuario["tabla"],"Administradores") != 0 {
 			throw new Exception(permisosErroneos);	
 		}
 
-		if strcmp($_POST["operacion"], "alta") {
+		$query3='SELECT * FROM Carreras WHERE nombre="' . $data["carrera"] . '"';
 
-			$query = "INSERT INTO Carreras (nombre) values ('".$_POST["carrera"]."'')";
+		$arrayCarrera = $conexion->query($query3);
 
-			if ($conexion->query($query) === FALSE) {
-				throw new Exception(errorConexionBase);
-			};
+		if (strcmp($data["operacion"], "alta") == 0) {
 
-			$arraySalida = armarSalida(null, "200");
-		}
+			if ( empty($data['carrera']) ) 
+				throw new Exception(errorEnJson);
 
-		if strcmp($_POST["operacion"], "modificacion") {
+			if ($arrayCarrera->num_rows == 1){
+				$carrera = $arrayCarrera->fetch_array(MYSQLI_ASSOC);
+				if($carrera['fechaHasta']==null){
+					throw new Exception(carreraDuplicada);
+				}else{
+					$query4='UPDATE Carreras set fechaHasta=null WHERE nombre="' . $data['carrera'] . '"';
+					if ($conexion->query($query4) === FALSE) {
+						throw new Exception(errorConexionBase);
+					};
+					$data["operacion"]='modificacion';
+				}
+			}else{
 
-			$query = "UPDATE Carreras SET nombre = '".$_POST["carrera"]."'
-			WHERE idCarrera = '".$_POST["id_carrera"] . "'";
+				$query = "INSERT INTO Carreras (nombre) values ('".$data["carrera"]."'')";
 
-			if ($conexion->query($query) === FALSE) {
-				throw new Exception(errorConexionBase);
-			};
+				if ($conexion->query($query) === FALSE) {
+					throw new Exception(errorConexionBase);
+				};
 
-			$arraySalida = armarSalida(null, "200");
+				$arraySalida = armarSalida(null, salidaExitosa, "/ABMCarreras");
+			}
 
-		}
+			if strcmp($data["operacion"], "modificacion") {
 
-		if strcmp($_POST["operacion"], "baja") {
+				if ( empty($data['carrera']) or empty($data['id_carrera']) ) 
+					throw new Exception(errorEnJson);
 
-			$query = "	UPDATE 
-					FROM Carreras 
+				if ($arrayCarrera->num_rows == 1){
+
+					$query = "UPDATE Carreras SET nombre = '".$data["carrera"]."'
+					WHERE idCarrera = '".$data["id_carrera"] . "'";
+
+					if ($conexion->query($query) === FALSE) {
+						throw new Exception(errorConexionBase);
+					};
+
+					$arraySalida = armarSalida(null, salidaExitosa, "/ABMCarreras");
+				} else {
+					throw new Exception(carreraInexistente);
+				}
+
+			}
+
+			if strcmp($data["operacion"], "baja") {
+				
+				if ( empty($data['id_carrera']) ) 
+					throw new Exception(errorEnJson);
+
+				if ($arrayUsuario->num_rows == 1){
+
+					$query = "	UPDATE Carreras 
 					SET fechaHasta = curdate()
-					WHERE idCarrera = '".$_POST["id_carrera"] . "'";
+					WHERE idCarrera = '".$data["id_carrera"] . "'";
 
-			if ($conexion->query($query) === FALSE) {
-				throw new Exception(errorConexionBase);
-			};
+					if ($conexion->query($query) === FALSE) {
+						throw new Exception(errorConexionBase);
+					};
 
-			$arraySalida = armarSalida(null, "200");
+					$query2 = "	update Materias
+								set fechaHasta = curdate()
+								where idMateria in (	select idMateria
+														from MateriasXCarreras 
+														where idCarrera = '".$data["id_carrera"]."'
+														minus 
+														select idMateria 
+														from MateriasXCarreras
+														where idCarrera != '".$data["id_carrera"]."')";
 
-		}
+					if ($conexion->query($query2) === FALSE) {
+						throw new Exception(errorConexionBase);
+					};
 
-		$conexion->close();
+					$query3 = "	update Catedras
+								set fechaHasta = curdate()
+								where idMateria in (	select idMateria
+														from MateriasXCarreras 
+														where idCarrera = '".$data["id_carrera"]."'
+														minus 
+														select idMateria 
+														from MateriasXCarreras
+														where idCarrera != '".$data["id_carrera"]."')";
 
-		echo $arraySalida;
+					if ($conexion->query($query3) === FALSE) {
+						throw new Exception(errorConexionBase);
+					};
 
-	} catch (Exception $e) {
+					$query4 = "	update Cursadas
+								set fechaHasta = curdate()
+								where idMateria in (	select idMateria
+														from MateriasXCarreras 
+														where idCarrera = '".$data["id_carrera"]."'
+														minus 
+														select idMateria 
+														from MateriasXCarreras
+														where idCarrera != '".$data["id_carrera"]."')";								
 
-		$arraySalida = armarSalida(null, $e->getMessage());
+					if ($conexion->query($query4) === FALSE) {
+						throw new Exception(errorConexionBase);
+					};
 
-		if (isset($conexion)) {
+					$arraySalida = armarSalida(null, salidaExitosa, "/ABMCarreras");
+				}else{
+					throw new Exception(carreraInexistente);
+				}
+			}
+
 			$conexion->close();
+
+			echo $arraySalida;
+
+		} catch (Exception $e) {
+
+			$arraySalida = armarSalida(null, $e->getMessage(), "/ABMCarreras");
+
+			if (isset($conexion)) {
+				$conexion->close();
+			}
+
+			echo $arraySalida;
+
 		}
-
-		echo $arraySalida;
-
 	}
-}
 
 
-if(!defined('TESTING'))
-{
-	return doABMCarreras($_POST);
-}
+	if(!defined('TESTING'))
+	{
+		return doABMCarreras($_POST);
+	}
 
-?>
+	?>
