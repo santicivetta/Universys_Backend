@@ -34,4 +34,7 @@ define('carreraInexistente','1003');
 define('materiaInexistente','1004');
 
 define('materiaDuplicada','1005');
+define('catedraDuplicada','1006');
+
+define('catedraInexistente','1007');
 ?>
