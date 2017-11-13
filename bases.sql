@@ -90,18 +90,19 @@ PRIMARY KEY (idMateria));
 
 DROP TABLE IF EXISTS Catedras;
 CREATE TABLE Catedras(
+idCatedra int not null unique auto_increment,
 idMateria int not null,
 catedra varchar(30) not null,
 horasCatedra int,
 titular varchar(50),
-PRIMARY KEY(idMateria,catedra),
+PRIMARY KEY(idCatedra),
 FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 
 DROP TABLE IF EXISTS Cursadas;
 CREATE TABLE Cursadas(
 idCursada int not null auto_increment,
 idMateria int not null,
-catedra int not null,
+idCatedra int not null,
 año year not null,
 horario varchar(100),
 parcial datetime,
@@ -109,8 +110,8 @@ recuperatorio1 datetime,
 recuperatorio2 datetime,
 fechaHasta date default null,
 PRIMARY KEY(idCursada),
-FOREIGN KEY(idMateria) REFERENCES Catedras(idMateria),
-FOREIGN KEY(catedra) REFERENCES Catedras(catedra));
+FOREIGN KEY(idCatedra) REFERENCES Catedras(idCatedras),
+FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 
 DROP TABLE IF EXISTS Finales;
 CREATE TABLE Finales(
