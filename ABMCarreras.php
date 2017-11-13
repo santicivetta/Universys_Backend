@@ -147,23 +147,23 @@ function doABMCarreras($data) {
 
 			echo $arraySalida;
 
-		} catch (Exception $e) {
+	} catch (Exception $e) {
 
-			$arraySalida = armarSalida(null, $e->getMessage(), "/ABMCarreras");
+		$arraySalida = armarSalida(null, $e->getMessage(), "/ABMCarreras");
 
-			if (isset($conexion)) {
-				$conexion->close();
-			}
-
-			echo $arraySalida;
-
+		if (isset($conexion)) {
+			$conexion->close();
 		}
+
+		echo $arraySalida;
+
 	}
+}
 
 
-	if(!defined('TESTING'))
-	{
-		return doABMCarreras($_POST);
-	}
+if(!defined('TESTING'))
+{
+	return doABMCarreras($_POST);
+}
 
-	?>
+?>
