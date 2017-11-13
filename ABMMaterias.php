@@ -39,7 +39,7 @@ function getIdMateria($conexion, $nombreMateria){
 
 }
 
-function doABMCarreras($data) {
+function doABMMaterias($data) {
 	try {
 		
 		if (!(isset($data))) {
@@ -148,7 +148,7 @@ function doABMCarreras($data) {
 
 					$query2 = "	update Catedras
 								set fechaHasta = curdate()
-								where idMateria = '".$data["id_carrera"]."'";
+								where idMateria = '".$data["idMateria"]."'";
 
 					if ($conexion->query($query2) === FALSE) {
 						throw new Exception(errorConexionBase);
@@ -156,7 +156,7 @@ function doABMCarreras($data) {
 
 					$query3 = "	update Cursadas
 								set fechaHasta = curdate()
-								where idMateria = '".$data["id_carrera"]."'";							
+								where idMateria = '".$data["idMateria"]."'";							
 
 					if ($conexion->query($query3) === FALSE) {
 						throw new Exception(errorConexionBase);
@@ -189,7 +189,7 @@ function doABMCarreras($data) {
 
 if(!defined('TESTING'))
 {
-	return doABMCarreras($_POST);
+	return doABMMaterias($_POST);
 }
 
 ?>
