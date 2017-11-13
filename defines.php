@@ -37,4 +37,10 @@ define('materiaDuplicada','1005');
 define('catedraDuplicada','1006');
 
 define('catedraInexistente','1007');
+
+
+define('cursadaDuplicada','1008');
+define('cursadaInexistente','1009');
+
+
 ?>
