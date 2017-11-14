@@ -24,20 +24,21 @@ function doABMCarreras($data) {
 		$miUsuario = validarSesion($conexion, $data["idSesion"]);
 
 	//valido permisos
-		if strcmp($miUsuario["tabla"],"Administradores") != 0 {
+		if (strcmp($miUsuario["tabla"],"Administradores") != 0) {
 			throw new Exception(permisosErroneos);	
 		}
-
-		$query3='SELECT * FROM Carreras WHERE nombre="' . $data["carrera"] . '"';
-
-		$arrayCarrera = $conexion->query($query3);
 
 		if (strcmp($data["operacion"], "alta") == 0) {
 
 			if ( empty($data['carrera']) ) 
 				throw new Exception(errorEnJson);
 
+			$query3='SELECT * FROM Carreras WHERE nombre="' . $data["carrera"] . '"';
+
+			$arrayCarrera = $conexion->query($query3);
+
 			if ($arrayCarrera->num_rows == 1){
+
 				$carrera = $arrayCarrera->fetch_array(MYSQLI_ASSOC);
 				if($carrera['fechaHasta']==null){
 					throw new Exception(carreraDuplicada);
@@ -46,106 +47,107 @@ function doABMCarreras($data) {
 					if ($conexion->query($query4) === FALSE) {
 						throw new Exception(errorConexionBase);
 					};
-					$data["operacion"]='modificacion';
 				}
+
 			}else{
 
-				$query = "INSERT INTO Carreras (nombre) values ('".$data["carrera"]."'')";
+				$query = "INSERT INTO Carreras (nombre) values ('" . $data["carrera"] . "')";
 
 				if ($conexion->query($query) === FALSE) {
 					throw new Exception(errorConexionBase);
 				};
 
-				$arraySalida = armarSalida(null, salidaExitosa, "/ABMCarreras");
 			}
+		}elseif (strcmp($data["operacion"], "modificacion")==0) {
 
-			if strcmp($data["operacion"], "modificacion") {
+			if ( empty($data['carrera']) or empty($data['idCarrera']) ) 
+				throw new Exception(errorEnJson);
 
-				if ( empty($data['carrera']) or empty($data['id_carrera']) ) 
-					throw new Exception(errorEnJson);
+			$query3='SELECT * FROM Carreras WHERE nombre="' . $data["carrera"] . '"';
 
-				if ($arrayCarrera->num_rows == 1){
+			$arrayCarrera = $conexion->query($query3);
 
-					$query = "UPDATE Carreras SET nombre = '".$data["carrera"]."'
-					WHERE idCarrera = '".$data["id_carrera"] . "'";
-
-					if ($conexion->query($query) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
-
-					$arraySalida = armarSalida(null, salidaExitosa, "/ABMCarreras");
-				} else {
-					throw new Exception(carreraInexistente);
-				}
-
-			}
-
-			if strcmp($data["operacion"], "baja") {
+			if ($arrayCarrera->num_rows == 1)
+				throw new Exception(carreraDuplicada);
 				
-				if ( empty($data['id_carrera']) ) 
-					throw new Exception(errorEnJson);
+			$query = "UPDATE Carreras SET nombre = '".$data["carrera"]."'
+			WHERE idCarrera = '".$data["idCarrera"] . "'";
+				
+			if ($conexion->query($query) === FALSE)
+				throw new Exception(errorConexionBase);
 
-				if ($arrayUsuario->num_rows == 1){
+			if ($conexion->affected_rows==0)
+				throw new Exception(carreraInexistente);
 
-					$query = "	UPDATE Carreras 
-					SET fechaHasta = curdate()
-					WHERE idCarrera = '".$data["id_carrera"] . "'";
+		}elseif (strcmp($data["operacion"], "baja")==0) {
+			
+			if ( empty($data['idCarrera']) ) 
+				throw new Exception(errorEnJson);
 
-					if ($conexion->query($query) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
+			$query = "UPDATE Carreras 
+			SET fechaHasta = curdate()
+			WHERE idCarrera = '".$data["idCarrera"] . "'";
 
-					$query2 = "	update Materias
-								set fechaHasta = curdate()
-								where idMateria in (	select idMateria
-														from MateriasXCarreras 
-														where idCarrera = '".$data["id_carrera"]."'
-														minus 
-														select idMateria 
-														from MateriasXCarreras
-														where idCarrera != '".$data["id_carrera"]."')";
+			if ($conexion->query($query) === FALSE) {
+				return $query;
+				throw new Exception(errorConexionBase);
+			};
 
-					if ($conexion->query($query2) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
+			if ($conexion->affected_rows==0)
+				throw new Exception(carreraInexistente);
 
-					$query3 = "	update Catedras
-								set fechaHasta = curdate()
-								where idMateria in (	select idMateria
-														from MateriasXCarreras 
-														where idCarrera = '".$data["id_carrera"]."'
-														minus 
-														select idMateria 
-														from MateriasXCarreras
-														where idCarrera != '".$data["id_carrera"]."')";
+			$query2 = "	update Materias
+						set fechaHasta = curdate()
+						where idMateria in (	select idMateria
+												from MateriasXCarreras 
+												where idCarrera = '".$data["idCarrera"]."'
+												minus 
+												select idMateria 
+												from MateriasXCarreras
+												where idCarrera != '".$data["idCarrera"]."')";
 
-					if ($conexion->query($query3) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
+			if ($conexion->query($query2) === FALSE) {
+				return $query2;
+				throw new Exception(errorConexionBase);
+			};
 
-					$query4 = "	update Cursadas
-								set fechaHasta = curdate()
-								where idMateria in (	select idMateria
-														from MateriasXCarreras 
-														where idCarrera = '".$data["id_carrera"]."'
-														minus 
-														select idMateria 
-														from MateriasXCarreras
-														where idCarrera != '".$data["id_carrera"]."')";								
+			$query3 = "	update Catedras
+						set fechaHasta = curdate()
+						where idMateria in (	select idMateria
+												from MateriasXCarreras 
+												where idCarrera = '".$data["idCarrera"]."'
+												minus 
+												select idMateria 
+												from MateriasXCarreras
+												where idCarrera != '".$data["idCarrera"]."')";
 
-					if ($conexion->query($query4) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
+			if ($conexion->query($query3) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
 
-					$arraySalida = armarSalida(null, salidaExitosa, "/ABMCarreras");
-				}else{
-					throw new Exception(carreraInexistente);
-				}
-			}
+			$query4 = "	update Cursadas
+						set fechaHasta = curdate()
+						where idMateria in (	select idMateria
+												from MateriasXCarreras 
+												where idCarrera = '".$data["idCarrera"]."'
+												minus 
+												select idMateria 
+												from MateriasXCarreras
+												where idCarrera != '".$data["idCarrera"]."')";								
 
-			$conexion->close();
+			if ($conexion->query($query4) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
 
-			echo $arraySalida;
+		}else{
+			throw new Exception(errorEnJson);
+		}
+
+		$arraySalida = armarSalida(null, salidaExitosa, "/ABMCarreras");
+
+		$conexion->close();
+
+		return $arraySalida;
 
 	} catch (Exception $e) {
 
@@ -155,7 +157,7 @@ function doABMCarreras($data) {
 			$conexion->close();
 		}
 
-		echo $arraySalida;
+		return $arraySalida;
 
 	}
 }
