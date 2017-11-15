@@ -18,17 +18,16 @@ if($eCon==null){
 
   //PRUEBA 1
   $datos= doABMCarreras(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "idCarrera" => "1"]);
-  #$datosParseados= json_decode($datos, true);
-  var_dump($datos);
+  $datosParseados= json_decode($datos, true);
   if($datosParseados["errorId"]=='200'){
     echo "Prueba1 OK </br>";
   }
   else{
     echo "Prueba1 FAIL </br>";
   }
-/*
+
   //PRUEBA 2
-  $datos= doABMCarreras(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "modificacion", "carrera" => "Tecnicatura en Program", "idCarrera" => "5"]);
+  $datos= doABMCarreras(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "idCarrera" => "3"]);
   $datosParseados= json_decode($datos, true);
   if($datosParseados["errorId"]==carreraInexistente){
     echo "Prueba2 OK </br>";
@@ -38,14 +37,14 @@ if($eCon==null){
   }
 
   //PRUEBA 3
-  $datos= doABMCarreras(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "modificacion", "carrera" => "Tecnicatura en Progra", "idCarrera" => "5"]);
+  $datos= doABMCarreras(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "idCarrera" => "2"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]==carreraDuplicada){
+  if($datosParseados["errorId"]=='200'){
     echo "Prueba3 OK </br>";
   }
   else{
     echo "Prueba3 FAIL </br>";
-  }*/
+  }
 
 }
 mysqli_close($conexion);
