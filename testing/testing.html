@@ -18,6 +18,9 @@
       <button name="button" id="altaUsuario">AltaUsuario</button>
       <button name="button" id="modificacionUsuario">ModifUsuario</button>
       <button name="button" id="bajaUsuario">BajaUsuario</button>
+      <button name="button" id="altaCarrera">AltaCarrera</button>
+      <button name="button" id="modificacionCarrera">ModifCarrera</button>
+      <button name="button" id="bajaCarrera">BajaCarrera</button>
       <button name="button" id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
@@ -68,6 +71,21 @@
       bajaUsuario(true);
     });
 
+    $('#altaCarrera').click(function(){
+      cargando();
+      altaCarrera(true);
+    });
+
+    $('#modificacionCarrera').click(function(){
+      cargando();
+      modificacionCarrera(true);
+    });
+
+    $('#bajaCarrera').click(function(){
+      cargando();
+      bajaCarrera(true);
+    });
+
     $('#limpiarConsola').click(function(){
       $('#respuesta').empty();
     });
@@ -79,7 +97,13 @@
           logout(false,function(){
             altaUsuario(false,function(){
               modificacionUsuario(false,function(){
-                bajaUsuario(true);
+                bajaUsuario(false,function(){
+                  altaCarrera(false,function(){
+                    modificacionCarrera(false,function(){
+                      bajaCarrera(true);
+                    });
+                  });
+                });
               });
             });
           });
@@ -196,6 +220,69 @@
 
   function bajaUsuario(estado=false,onComplete=null){
   $.ajax({url: "testingAbmUsuarios/pruebaBaja.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function altaCarrera(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCarreras/pruebaAlta.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function modificacionCarrera(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCarreras/pruebaModificacion.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function bajaCarrera(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCarreras/pruebaBaja.php", 
       type: 'POST', 
       data: { },
      success : function(respuesta) {
