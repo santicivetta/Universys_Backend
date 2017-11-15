@@ -20,18 +20,29 @@ function doABMCatedras($data) {
 		$conexion = connect();
 
 	//valido sesion
+		//echo "<pre>".var_dump($conexion). "</pre> <br> <pre>". var_dump($data["idSesion"])."</pre>";
+/*
+		$query3="SELECT * FROM Sesiones";
+
+		$arrayCatedra = $conexion->query($query3);
+		$catedra = $arrayCatedra->fetch_array(MYSQLI_ASSOC);
+		//echo var_dump($catedra);
+
+
+*/
 		$miUsuario = validarSesion($conexion, $data["idSesion"]);
 
 	//valido permisos
-		if strcmp($miUsuario["tabla"],"Administradores") != 0 {
+		if (strcmp($miUsuario["tabla"],"Administradores") != 0) {
 			throw new Exception(permisosErroneos);	
 		}
 		
 
 		if (strcmp($data["operacion"], "alta")==0) {
 
-			if ( empty($data['idMateria']) or empty($data['catedra']) or empty($data['titularDeCatedra']) or empty($data['ofertaHoraria']) ) 
+			if ( empty($data['idMateria']) or empty($data['catedra']) or empty($data['titularDeCatedra']) or empty($data['horasCatedra']) ){
 				throw new Exception(errorEnJson);
+			}
 
 			$query3="SELECT * FROM Catedras WHERE catedra='" . $data["catedra"] . "' and idMateria = '".$data["idMateria"]."'";
 
@@ -47,10 +58,11 @@ function doABMCatedras($data) {
 						throw new Exception(errorConexionBase);
 					};
 					$data["operacion"]='modificacion';
+					$data["idCatedra"]=$catedra["idCatedra"];
 				}
 			}else{
 
-				$query = "INSERT INTO Catedras (catedra) values ('".$data["catedra"]."')";
+				$query = "INSERT INTO Catedras (idMateria, catedra, horasCatedra, titular) values ('".$data["idMateria"]."','".$data["catedra"]."','".$data["horasCatedra"]."','".$data["titularDeCatedra"]."')";
 
 				if ($conexion->query($query) === FALSE) {
 					throw new Exception(errorConexionBase);
@@ -64,7 +76,7 @@ function doABMCatedras($data) {
 
 		if (strcmp($data["operacion"], "modificacion")==0) {
 
-			if ( empty($data['idCatedra']) or empty($data['catedra']) or empty($data['titularDeCatedra']) or empty($data['ofertaHoraria']) ) 
+			if ( empty($data['idCatedra']) or empty($data['catedra']) or empty($data['titularDeCatedra']) or empty($data['horasCatedra']) ) 
 				throw new Exception(errorEnJson);
 
 			$query3='SELECT * FROM Catedras WHERE idCatedra="' . $data["idCatedra"] . '"';
@@ -75,7 +87,7 @@ function doABMCatedras($data) {
 
 				$query = "UPDATE Catedras 
 				SET catedra = '".$data["catedra"]."',
-				horasCatedra = '".$data["ofertaHoraria"]."',
+				horasCatedra = '".$data["horasCatedra"]."',
 				titular = '".$data["titularDeCatedra"]."' 
 				WHERE idCatedra = '".$data["idCatedra"]."'";
 
@@ -125,7 +137,7 @@ function doABMCatedras($data) {
 
 		$conexion->close();
 
-		echo $arraySalida;
+		return $arraySalida;
 
 	} catch (Exception $e) {
 
@@ -135,7 +147,7 @@ function doABMCatedras($data) {
 			$conexion->close();
 		}
 
-		echo $arraySalida;
+		return $arraySalida;
 
 	}
 }
