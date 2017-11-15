@@ -143,6 +143,7 @@ idCursada int not null,
 matricula int not null,
 notaParcial int,
 notaRecuperatorio int,
+fechaHasta date default null,
 PRIMARY KEY(idCursada,matricula),
 FOREIGN KEY(matricula) REFERENCES Alumnos(matricula),
 FOREIGN KEY(idCursada) REFERENCES Cursadas(idCursada));
@@ -151,6 +152,7 @@ DROP TABLE IF EXISTS ProfesoresXCursada;
 CREATE TABLE ProfesoresXCursada(
 idCursada int not null,
 legajo int not null,
+fechaHasta date default null,
 PRIMARY KEY(idCursada,legajo),
 FOREIGN KEY(legajo) REFERENCES Profesores(legajo),
 FOREIGN KEY(idCursada) REFERENCES Cursadas(idCursada));
