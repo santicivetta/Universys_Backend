@@ -96,16 +96,18 @@ DROP TABLE IF EXISTS Cursadas;
 CREATE TABLE Cursadas(
 idCursada int not null auto_increment,
 idMateria int not null,
+<<<<<<< Updated upstream
+catedra varchar(30) not null,
+=======
 idCatedra int not null,
+cuatrimestre varchar(100),
+>>>>>>> Stashed changes
 año year not null,
 horario varchar(100),
 parcial datetime,
 recuperatorio1 datetime,
 recuperatorio2 datetime,
-fechaHasta date default null,
-PRIMARY KEY(idCursada),
-FOREIGN KEY(idCatedra) REFERENCES Catedras(idCatedras),
-FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
+PRIMARY KEY(idCursada));
 
 DROP TABLE IF EXISTS Finales;
 CREATE TABLE Finales(

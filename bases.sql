@@ -104,6 +104,7 @@ CREATE TABLE Cursadas(
 idCursada int not null auto_increment,
 idMateria int not null,
 idCatedra int not null,
+cuatrimestre varchar(100),
 año year not null,
 horario varchar(100),
 parcial datetime,
