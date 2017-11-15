@@ -76,18 +76,21 @@ PRIMARY KEY(idCarrera,idMateria));
 
 DROP TABLE IF EXISTS Materias;
 CREATE TABLE Materias(
-idMateria int not null auto_increment,
+idMateria int not null unique auto_increment,
 nombre varchar(50) not null unique,
 fechaHasta date default null,
 PRIMARY KEY (idMateria));
 
 DROP TABLE IF EXISTS Catedras;
 CREATE TABLE Catedras(
+idCatedra int not null unique auto_increment,
 idMateria int not null,
 catedra varchar(30) not null,
 horasCatedra int,
 titular varchar(50),
-PRIMARY KEY(idMateria,catedra));
+fechaHasta date default null,
+PRIMARY KEY(idCatedra),
+FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 
 DROP TABLE IF EXISTS Cursadas;
 CREATE TABLE Cursadas(
