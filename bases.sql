@@ -112,7 +112,7 @@ recuperatorio1 datetime,
 recuperatorio2 datetime,
 fechaHasta date default null,
 PRIMARY KEY(idCursada),
-FOREIGN KEY(idCatedra) REFERENCES Catedras(idCatedras),
+FOREIGN KEY(idCatedra) REFERENCES Catedras(idCatedra),
 FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 
 DROP TABLE IF EXISTS Finales;
