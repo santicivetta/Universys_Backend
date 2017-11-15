@@ -39,3 +39,5 @@ INSERT INTO MateriasXCarreras values
 (1,1),
 (1,2),
 (2,1);
+
+
