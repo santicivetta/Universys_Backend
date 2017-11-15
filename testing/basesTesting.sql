@@ -87,6 +87,7 @@ idMateria int not null,
 catedra varchar(30) not null,
 horasCatedra int,
 titular varchar(50),
+fechaHasta date default null,
 PRIMARY KEY(idMateria,catedra));
 
 DROP TABLE IF EXISTS Cursadas;
@@ -99,6 +100,7 @@ horario varchar(100),
 parcial datetime,
 recuperatorio1 datetime,
 recuperatorio2 datetime,
+fechaHasta date default null,
 PRIMARY KEY(idCursada));
 
 DROP TABLE IF EXISTS Finales;
