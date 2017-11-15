@@ -12,9 +12,9 @@ TRUNCATE TABLE Sesiones;
 INSERT INTO Sesiones(usuario,fechaAlta) values
 ("bedel.gato@comunidad.ub.edu.ar",CURDATE());
 
-INSERT INTO Materias(nombre) values
-("Testing");
-
-
+TRUNCATE TABLE Cursadas;
 TRUNCATE TABLE Catedras;
 INSERT INTO Catedras(idMateria, catedra, fechaHasta) values ('1','Marmol', curdate());
+TRUNCATE TABLE Materias;
+INSERT INTO Materias(nombre) values
+("Testing");
