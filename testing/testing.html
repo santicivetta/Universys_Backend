@@ -21,6 +21,9 @@
       <button name="button" id="altaCarrera">AltaCarrera</button>
       <button name="button" id="modificacionCarrera">ModifCarrera</button>
       <button name="button" id="bajaCarrera">BajaCarrera</button>
+      <button name="button" id="altaCatedra">AltaCatedra</button>
+      <button name="button" id="modificacionCatedra">ModifCatedra</button>
+      <button name="button" id="bajaCatedra">BajaCarrera</button>
       <button name="button" id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
@@ -86,13 +89,28 @@
       bajaCarrera(true);
     });
 
+    $('#altaCatedra').click(function(){
+      cargando();
+      altaCatedra(true);
+    });
+
+    $('#modificacionCatedra').click(function(){
+      cargando();
+      modificacionCatedra(true);
+    });
+
+    $('#bajaCatedra').click(function(){
+      cargando();
+      bajaCatedra(true);
+    });
+
     $('#limpiarConsola').click(function(){
       $('#respuesta').empty();
     });
 
     $('#todos').click(function(){
       cargando();
-      validarSesion(false, function() {
+      validarSesion(false,function() {
         login(false,function(){
           logout(false,function(){
             altaUsuario(false,function(){
@@ -100,7 +118,13 @@
                 bajaUsuario(false,function(){
                   altaCarrera(false,function(){
                     modificacionCarrera(false,function(){
-                      bajaCarrera(true);
+                      bajaCarrera(false,function(){
+                        altaCatedra(false,function(){
+                          modificacionCatedra(false,function(){
+                            bajaCatedra(true);
+                          });
+                        });
+                      });
                     });
                   });
                 });
@@ -283,6 +307,69 @@
 
   function bajaCarrera(estado=false,onComplete=null){
   $.ajax({url: "testingAbmCarreras/pruebaBaja.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function altaCatedra(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCatedras/pruebaAlta.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function modificacionCatedra(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCatedras/pruebaModificacion.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function bajaCatedra(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCatedras/pruebaBaja.php", 
       type: 'POST', 
       data: { },
      success : function(respuesta) {
