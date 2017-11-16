@@ -14,7 +14,7 @@ catch (Exception $eCon) {
     echo 'Excepción capturada: ',  $eCon->getMessage(), "\n";
 }
 if($eCon==null){
-  echo ">> <strong>Alta Usuario</strong> </br>";
+  echo ">> <strong>Alta Materia</strong> </br>";
 
   //PRUEBA 1
   $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "alta", "nombre" => "Gaston", "apellido" => "Bodeman","documento" => "37213234", "fnac" => "1994-09-20","genero" => "Masculino","domicilio" => "Blanco Encalada 4892","telefono" => "45228786","identificador" => "3140","mail" => "gaston.bodeman@comunidad.ub.edu.ar","contraseña" => "contraseñagaston","rol" => "Alumno"]);

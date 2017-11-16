@@ -39,6 +39,19 @@ function getIdMateria($conexion, $nombreMateria){
 
 }
 
+function verificarIdMateria($conexion, $idMateria){
+
+	$query="SELECT *
+	FROM 	Materias
+	WHERE 	idMateria ='" .$idMateria."'";
+
+	$result = $conexion->query($query);
+
+	if ($result->num_rows != 1)
+		throw new Exception(materiaInexistente);
+
+}
+
 function doABMMaterias($data) {
 	try {
 		
@@ -70,23 +83,20 @@ function doABMMaterias($data) {
 		
 		if (strcmp($data["operacion"], "alta")==0) {
 
-			if ( empty($data['carrera']) or empty($data['materia']) ) 
+			if ( empty($data['materia']) ) 
 				throw new Exception(errorEnJson);
-
-			//para alta tiene que existir la carrera a la que pertenece
-			$idCarrera = getIdCarrera($conexion, $data["carrera"]);
-
 			
 			if ($arrayMateria->num_rows == 1){
 				$materia = $arrayMateria->fetch_array(MYSQLI_ASSOC);
 				if($materia['fechaHasta']==null){
 					throw new Exception(materiaDuplicada);
 				}else{
-					$query4='UPDATE Materias set fechaHasta=null WHERE nombre="' . $data['materia'] . '"';
+					$query4='UPDATE Materias set fechaHasta=null WHERE idMateria="' . $materia['idMateria'] . '"';
 					if ($conexion->query($query4) === FALSE) {
 						throw new Exception(errorConexionBase);
 					};
 					$data["operacion"]='modificacion';
+					$data["idMateria"]=$materia['idMateria'];
 				}
 			}else{
 
@@ -95,83 +105,65 @@ function doABMMaterias($data) {
 				if ($conexion->query($query) === FALSE) {
 					throw new Exception(errorConexionBase);
 				};
-
-				$idMateria = getIdMateria($conexion, $data["materia"]);
-
-				$query2 = "INSERT INTO MateriasXCarreras (idCarrera, idMateria) values ('".$idCarrera."','".$idMateria."')";
-
-				if ($conexion->query($query2) === FALSE) {
-					throw new Exception(errorConexionBase);
-				};
-
-				$arraySalida = armarSalida(null, salidaExitosa, "/ABMMaterias");
 			}	
 		}
 
 		
 		if (strcmp($data["operacion"], "modificacion")==0) {
 
-				if ( empty($data['materia']) or empty($data['idMateria']) ) 
-					throw new Exception(errorEnJson);
+			if ( empty($data['materia']) or empty($data['idMateria']) ) 
+				throw new Exception(errorEnJson);
 
-				if ($arrayMateria->num_rows == 1){
+			verificarIdMateria($conexion,$data['idMateria']);
 
-					$query = "UPDATE Materias SET nombre = '".$data["idMateria"]."'
-								WHERE idMateria = '".$data["idMateria"] . "'";
+			$query = "UPDATE Materias SET nombre = '".$data["materia"]."'
+						WHERE idMateria = '".$data["idMateria"] . "'";
 
-					if ($conexion->query($query) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
+			if ($conexion->query($query) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
 
-					$arraySalida = armarSalida(null, salidaExitosa, "/ABMMaterias");
-				} else {
-					throw new Exception(materiaInexistente);
-				}
-
-			}
+		}
 		
 
 		if (strcmp($data["operacion"], "baja")==0) {
 				
-				if ( empty($data['idMateria']) ) 
-					throw new Exception(errorEnJson);
+			if ( empty($data['idMateria']) ) 
+				throw new Exception(errorEnJson);
 
-				if ($arrayMateria->num_rows == 1){
+			verificarIdMateria($conexion,$data['idMateria']);
+			
+			$query = "	UPDATE Materias 
+			SET fechaHasta = curdate()
+			WHERE idMateria = '".$data["idMateria"] . "'";
 
-					$query = "	UPDATE Materias 
-					SET fechaHasta = curdate()
-					WHERE idMateria = '".$data["idMateria"] . "'";
+			if ($conexion->query($query) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
 
-					if ($conexion->query($query) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
+			$query2 = "	update Catedras
+						set fechaHasta = curdate()
+						where idMateria = '".$data["idMateria"]."'";
 
-					$query2 = "	update Catedras
-								set fechaHasta = curdate()
-								where idMateria = '".$data["idMateria"]."'";
+			if ($conexion->query($query2) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
 
-					if ($conexion->query($query2) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
+			$query3 = "	update Cursadas
+						set fechaHasta = curdate()
+						where idMateria = '".$data["idMateria"]."'";							
 
-					$query3 = "	update Cursadas
-								set fechaHasta = curdate()
-								where idMateria = '".$data["idMateria"]."'";							
+			if ($conexion->query($query3) === FALSE) {
+				throw new Exception(errorConexionBase);
+			};
 
-					if ($conexion->query($query3) === FALSE) {
-						throw new Exception(errorConexionBase);
-					};
-
-					$arraySalida = armarSalida(null, salidaExitosa, "/ABMMaterias");
-				}else{
-					throw new Exception(materiaInexistente);
-				}
-			}
-
+		}
 
 		$conexion->close();
 
-		echo $arraySalida;
+		$arraySalida = armarSalida(null, salidaExitosa, "/ABMMaterias");
+
+		return $arraySalida;
 
 	} catch (Exception $e) {
 
@@ -181,7 +173,7 @@ function doABMMaterias($data) {
 			$conexion->close();
 		}
 
-		echo $arraySalida;
+		return $arraySalida;
 
 	}
 }
