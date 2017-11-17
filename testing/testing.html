@@ -24,6 +24,9 @@
       <button name="button" id="altaCatedra">AltaCatedra</button>
       <button name="button" id="modificacionCatedra">ModifCatedra</button>
       <button name="button" id="bajaCatedra">BajaCarrera</button>
+      <button name="button" id="altaMateria">AltaMateria</button>
+      <button name="button" id="modificacionMateria">ModifMateria</button>
+      <button name="button" id="bajaMateria">BajaMateria</button>
       <button name="button" id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
@@ -89,19 +92,19 @@
       bajaCarrera(true);
     });
 
-    $('#altaCatedra').click(function(){
+    $('#altaMateria').click(function(){
       cargando();
-      altaCatedra(true);
+      altaMateria(true);
     });
 
-    $('#modificacionCatedra').click(function(){
+    $('#modificacionMateria').click(function(){
       cargando();
-      modificacionCatedra(true);
+      modificacionMateria(true);
     });
 
-    $('#bajaCatedra').click(function(){
+    $('#bajaMateria').click(function(){
       cargando();
-      bajaCatedra(true);
+      bajaMateria(true);
     });
 
     $('#limpiarConsola').click(function(){
@@ -121,7 +124,13 @@
                       bajaCarrera(false,function(){
                         altaCatedra(false,function(){
                           modificacionCatedra(false,function(){
-                            bajaCatedra(true);
+                            bajaCatedra(false,function(){
+                              altaMateria(false,function(){
+                                modificacionMateria(false,function(){
+                                  bajaMateria(true);
+                                });
+                              });
+                            });
                           });
                         });
                       });
@@ -370,6 +379,69 @@
 
   function bajaCatedra(estado=false,onComplete=null){
   $.ajax({url: "testingAbmCatedras/pruebaBaja.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function altaMateria(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmMaterias/pruebaAlta.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function modificacionMateria(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmMaterias/pruebaModificacion.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function bajaMateria(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmMaterias/pruebaBaja.php", 
       type: 'POST', 
       data: { },
      success : function(respuesta) {

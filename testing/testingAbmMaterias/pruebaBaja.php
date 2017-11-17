@@ -14,7 +14,7 @@ catch (Exception $eCon) {
     echo 'Excepción capturada: ',  $eCon->getMessage(), "\n";
 }
 if($eCon==null){
-  echo ">> <strong>Modificacion Materia</strong> </br>";
+  echo ">> <strong>Baja Materia</strong> </br>";
 
   //PRUEBA 1
   $datos= doABMMaterias(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "idMateria"=>"2"]);
