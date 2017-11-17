@@ -142,7 +142,8 @@ function doABMMaterias($data) {
 
 			$query3 = "	update Cursadas
 						set fechaHasta = curdate()
-						where idMateria = '".$data["idMateria"]."'";							
+						where idCatedra not in( SELECT idCatedra
+												FROM Catedras)";							
 
 			if ($conexion->query($query3) === FALSE) {
 				throw new Exception(errorConexionBase);

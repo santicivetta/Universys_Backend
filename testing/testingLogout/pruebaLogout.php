@@ -19,7 +19,7 @@ if($eCon==null){
   //PRUEBA 1
   $datos= doLogout(["apiVer" => apiVersionActual, "idSesion" => "1"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200'){
+  if($datosParseados["errorId"]==salidaExitosa){
     echo "Prueba1 OK </br>";
   }
   else{

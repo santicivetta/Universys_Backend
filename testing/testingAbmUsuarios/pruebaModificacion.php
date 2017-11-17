@@ -29,7 +29,7 @@ if($eCon==null){
   //PRUEBA 2
   $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "modificacion", "nombre" => "Santi", "apellido" => "Cive","documento" => "12345678", "fnac" => "1994-09-10","genero" => "Masculino","domicilio" => "Cabildo 321","telefono" => "123456789","mail" => "santiago.civetta@comunidad.ub.edu.ar","contraseña" => "contraseñanueva"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200'){
+  if($datosParseados["errorId"]==salidaExitosa){
     echo "Prueba2 OK </br>";
   }
   else{
@@ -39,7 +39,7 @@ if($eCon==null){
   //PRUEBA 3
   $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "modificacion", "nombre" => "Andi", "apellido" => "Didi","documento" => "123", "fnac" => "2004-09-10","genero" => "Indefinido","domicilio" => "Pampa y la via","telefono" => "987654321","mail" => "andres.didier@comunidad.ub.edu.ar","contraseña" => "contraseñanueva"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200'){
+  if($datosParseados["errorId"]==salidaExitosa){
     echo "Prueba3 OK </br>";
   }
   else{

@@ -29,10 +29,10 @@ INSERT INTO Catedras(idMateria,catedra) values
 (2,"abc");
 
 TRUNCATE TABLE Cursadas;
-INSERT INTO Cursadas(idMateria,catedra,año) values
-(1,"abc",2017),
-(1,"acb",2017),
-(2,"abc",2017);
+INSERT INTO Cursadas(idCatedra,año) values
+(1,2017),
+(1,2017),
+(2,2017);
 
 TRUNCATE TABLE MateriasXCarreras;
 INSERT INTO MateriasXCarreras values

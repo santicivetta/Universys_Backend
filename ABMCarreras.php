@@ -89,66 +89,11 @@ function doABMCarreras($data) {
 			WHERE idCarrera = '".$data["idCarrera"] . "'";
 
 			if ($conexion->query($query) === FALSE) {
-				return $query;
 				throw new Exception(errorConexionBase);
 			};
 
 			if ($conexion->affected_rows==0)
 				throw new Exception(carreraInexistente);
-
-			$query2 = 	"UPDATE Materias SET fechaHasta=curdate()
-						 WHERE idMateria in(
-						 	SELECT distinct idMateria
-						 	FROM MateriasXCarreras
-						 	WHERE idcarrera='" .$data["idCarrera"]. "')
-						 and idMateria not in(
-						 	SELECT distinct idMateria
-						 	FROM MateriasXCarreras mxc,
-						 		 Carreras c
-						 	WHERE c.idCarrera=mxc.idCarrera
-						 	and c.fechaHasta is null
-						 	and mxc.idCarrera!='" .$data["idCarrera"]. "')";
-
-			if ($conexion->query($query2) === FALSE) {
-				return $query2;
-				throw new Exception(errorConexionBase);
-			};
-
-			$query3 = "UPDATE Catedras SET fechaHasta=curdate()
-						 WHERE idMateria in(
-						 	SELECT distinct idMateria
-						 	FROM MateriasXCarreras
-						 	WHERE idcarrera='" .$data["idCarrera"]. "')
-						and idMateria not in(
-						 	SELECT distinct idMateria
-						 	FROM MateriasXCarreras mxc,
-						 		 Carreras c
-						 	WHERE c.idCarrera=mxc.idCarrera
-						 	and c.fechaHasta is null
-						 	and mxc.idCarrera!='" .$data["idCarrera"]. "')";
-
-			if ($conexion->query($query3) === FALSE) {
-				return $query3;
-				throw new Exception(errorConexionBase);
-			};
-
-			$query4 = "UPDATE Cursadas SET fechaHasta=curdate()
-						 WHERE idMateria in(
-						 	SELECT distinct idMateria
-						 	FROM MateriasXCarreras
-						 	WHERE idcarrera='" .$data["idCarrera"]. "')
-						 and idMateria not in(
-						 	SELECT distinct idMateria
-						 	FROM MateriasXCarreras mxc,
-						 		 Carreras c
-						 	WHERE c.idCarrera=mxc.idCarrera
-						 	and c.fechaHasta is null
-						 	and mxc.idCarrera!='" .$data["idCarrera"]. "')";								
-
-			if ($conexion->query($query4) === FALSE) {
-				return $query4;
-				throw new Exception(errorConexionBase);
-			};
 
 		}else{
 			throw new Exception(errorEnJson);

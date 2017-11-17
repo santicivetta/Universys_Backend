@@ -19,7 +19,7 @@ if($eCon==null){
   //PRUEBA 1
   $datos= doABMCarreras(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "idCarrera" => "1"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200'){
+  if($datosParseados["errorId"]==salidaExitosa){
     echo "Prueba1 OK </br>";
   }
   else{
@@ -39,7 +39,7 @@ if($eCon==null){
   //PRUEBA 3
   $datos= doABMCarreras(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "idCarrera" => "2"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200'){
+  if($datosParseados["errorId"]==salidaExitosa){
     echo "Prueba3 OK </br>";
   }
   else{

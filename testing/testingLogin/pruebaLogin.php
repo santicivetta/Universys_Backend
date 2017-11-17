@@ -19,7 +19,7 @@ if($eCon==null){
   //PRUEBA 1
   $datos= doLogin(["apiVer" => apiVersionActual, "idSesion" => "", "mail" => "santiago.civetta@comunidad.ub.edu.ar", "password" => "contraseñasantiago"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200' and $datosParseados["usuario"]["idSesion"]>'0'){
+  if($datosParseados["errorId"]==salidaExitosa and $datosParseados["usuario"]["idSesion"]>'0'){
     echo "Prueba1 OK </br>";
   }
   else{
@@ -49,7 +49,7 @@ if($eCon==null){
   //PRUEBA 4
   $datos= doLogin(["apiVer" => apiVersionActual, "idSesion" => "", "mail" => "andres.didier@comunidad.ub.edu.ar", "password" => "contraseñaandres"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200' and $datosParseados["usuario"]["idSesion"]>'0'){
+  if($datosParseados["errorId"]==salidaExitosa and $datosParseados["usuario"]["idSesion"]>'0'){
     echo "Prueba4 OK </br>";
   }
   else{

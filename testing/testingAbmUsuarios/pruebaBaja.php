@@ -30,7 +30,7 @@ if($eCon==null){
   //PRUEBA 2
   $datos= doABMUsuarios(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "mail" => "andres.didier@comunidad.ub.edu.ar"]);
   $datosParseados= json_decode($datos, true);
-  if($datosParseados["errorId"]=='200'){
+  if($datosParseados["errorId"]==salidaExitosa){
     echo "Prueba2 OK </br>";
   }
   else{
