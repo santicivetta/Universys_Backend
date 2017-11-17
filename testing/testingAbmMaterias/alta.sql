@@ -13,3 +13,4 @@ INSERT INTO Sesiones(usuario,fechaAlta) values
 ("bedel.gato@comunidad.ub.edu.ar",CURDATE());
 
 TRUNCATE TABLE Materias;
+INSERT INTO Materias(nombre,fechaHasta) values ('Algebra',curdate());
