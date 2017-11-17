@@ -102,7 +102,6 @@ FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 DROP TABLE IF EXISTS Cursadas;
 CREATE TABLE Cursadas(
 idCursada int not null auto_increment,
-idMateria int not null,
 idCatedra int not null,
 cuatrimestre varchar(100),
 año year not null,

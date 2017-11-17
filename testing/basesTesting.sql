@@ -95,7 +95,6 @@ FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
 DROP TABLE IF EXISTS Cursadas;
 CREATE TABLE Cursadas(
 idCursada int not null auto_increment,
-idMateria int not null,
 idCatedra int not null,
 cuatrimestre varchar(100),
 año year not null,
@@ -104,9 +103,7 @@ parcial datetime,
 recuperatorio1 datetime,
 recuperatorio2 datetime,
 fechaHasta date default null,
-PRIMARY KEY(idCursada),
-FOREIGN KEY(idCatedra) REFERENCES Catedras(idCatedra),
-FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
+PRIMARY KEY(idCursada));
 
 DROP TABLE IF EXISTS Finales;
 CREATE TABLE Finales(
@@ -131,12 +128,14 @@ idCursada int not null,
 matricula int not null,
 notaParcial int,
 notaRecuperatorio int,
+fechaHasta date default null,
 PRIMARY KEY(idCursada,matricula));
 
 DROP TABLE IF EXISTS ProfesoresXCursada;
 CREATE TABLE ProfesoresXCursada(
 idCursada int not null,
 legajo int not null,
+fechaHasta date default null,
 PRIMARY KEY(idCursada,legajo));
 
 DROP TABLE IF EXISTS AlumnosXCarrera;
