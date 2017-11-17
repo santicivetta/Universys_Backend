@@ -5,36 +5,6 @@ include_once (__DIR__ . '/../../funcionesGenerales.php');
 include_once (__DIR__ . '/../../defines.php');
 include_once ('../../ABMCursadas.php');
 
-function setTimezone($default) {
-    $timezone = "";
-    
-    // On many systems (Mac, for instance) "/etc/localtime" is a symlink
-    // to the file with the timezone info
-    if (is_link("/etc/localtime")) {
-        
-        // If it is, that file's name is actually the "Olsen" format timezone
-        $filename = readlink("/etc/localtime");
-        
-        $pos = strpos($filename, "zoneinfo");
-        if ($pos) {
-            // When it is, it's in the "/usr/share/zoneinfo/" folder
-            $timezone = substr($filename, $pos + strlen("zoneinfo/"));
-        } else {
-            // If not, bail
-            $timezone = $default;
-        }
-    }
-    else {
-        // On other systems, like Ubuntu, there's file with the Olsen time
-        // right inside it.
-        $timezone = file_get_contents("/etc/timezone");
-        if (!strlen($timezone)) {
-            $timezone = $default;
-        }
-    }
-    date_default_timezone_set($timezone);
-}
-
 $eCon=null;
 try{
 $conexion = connect(True);
@@ -44,8 +14,7 @@ catch (Exception $eCon) {
     echo 'Excepción capturada: ',  $eCon->getMessage(), "\n";
 }
 if($eCon==null){
-  setTimezone(date_default_timezone_get());
-  echo ">> <strong>baja Cursadas</strong> </br>";
+  echo ">> <strong>Baja Cursadas</strong> </br>";
 
   //PRUEBA 1: intento dar de baja sin id
   $datos= doABMCursadas(["apiVer" => apiVersionActual, "idSesion" => "1", "operacion" => "baja", "idCursada" => "", "idCatedra" => "1", "cuatrimestre" => "segundo", "año" => "2017", "horario" => "abc123", "fechaParcial" => "12122017", "fechaRecuperatorio1" => "12122017", "fechaRecuperatorio2" => "12122017"]);
