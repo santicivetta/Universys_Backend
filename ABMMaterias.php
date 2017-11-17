@@ -72,16 +72,15 @@ function doABMMaterias($data) {
 		$miUsuario = validarSesion($conexion, $data["idSesion"]);
 
 	//valido permisos
-		if strcmp($miUsuario["tabla"],"Administradores") != 0 {
+		if (strcmp($miUsuario["tabla"],"Administradores") != 0 ){
 			throw new Exception(permisosErroneos);	
 		}
-
-		$query3='SELECT * FROM Materias WHERE nombre="' . $data["materia"] . '"';
-
-		$arrayMateria = $conexion->query($query3);
-
 		
 		if (strcmp($data["operacion"], "alta")==0) {
+
+			$query3='SELECT * FROM Materias WHERE nombre="' . $data["materia"] . '"';
+
+			$arrayMateria = $conexion->query($query3);
 
 			if ( empty($data['materia']) ) 
 				throw new Exception(errorEnJson);
@@ -95,8 +94,6 @@ function doABMMaterias($data) {
 					if ($conexion->query($query4) === FALSE) {
 						throw new Exception(errorConexionBase);
 					};
-					$data["operacion"]='modificacion';
-					$data["idMateria"]=$materia['idMateria'];
 				}
 			}else{
 
@@ -105,11 +102,8 @@ function doABMMaterias($data) {
 				if ($conexion->query($query) === FALSE) {
 					throw new Exception(errorConexionBase);
 				};
-			}	
-		}
-
-		
-		if (strcmp($data["operacion"], "modificacion")==0) {
+			}
+		}elseif (strcmp($data["operacion"], "modificacion")==0) {
 
 			if ( empty($data['materia']) or empty($data['idMateria']) ) 
 				throw new Exception(errorEnJson);
@@ -123,10 +117,7 @@ function doABMMaterias($data) {
 				throw new Exception(errorConexionBase);
 			};
 
-		}
-		
-
-		if (strcmp($data["operacion"], "baja")==0) {
+		}elseif (strcmp($data["operacion"], "baja")==0) {
 				
 			if ( empty($data['idMateria']) ) 
 				throw new Exception(errorEnJson);
@@ -157,6 +148,8 @@ function doABMMaterias($data) {
 				throw new Exception(errorConexionBase);
 			};
 
+		}else{
+			throw new Exception(errorEnJson);
 		}
 
 		$conexion->close();
