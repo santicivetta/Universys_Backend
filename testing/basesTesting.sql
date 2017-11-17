@@ -128,12 +128,14 @@ idCursada int not null,
 matricula int not null,
 notaParcial int,
 notaRecuperatorio int,
+fechaHasta date default null,
 PRIMARY KEY(idCursada,matricula));
 
 DROP TABLE IF EXISTS ProfesoresXCursada;
 CREATE TABLE ProfesoresXCursada(
 idCursada int not null,
 legajo int not null,
+fechaHasta date default null,
 PRIMARY KEY(idCursada,legajo));
 
 DROP TABLE IF EXISTS AlumnosXCarrera;
