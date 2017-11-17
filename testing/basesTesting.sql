@@ -89,8 +89,7 @@ catedra varchar(30) not null,
 horasCatedra int,
 titular varchar(50),
 fechaHasta date default null,
-PRIMARY KEY(idCatedra),
-FOREIGN KEY(idMateria) REFERENCES Materias(idMateria));
+PRIMARY KEY(idCatedra));
 
 DROP TABLE IF EXISTS Cursadas;
 CREATE TABLE Cursadas(
