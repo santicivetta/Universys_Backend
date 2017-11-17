@@ -65,7 +65,6 @@ $datos= doABMCursadas(["apiVer" => apiVersionActual, "idSesion" => "1", "operaci
   }
   else{
     echo "Prueba2 FAIL </br>";
-    var_dump($datosParseados);
   }
 
   //PRUEBA 3: doy de alta una catedra que figura como dada de baja
