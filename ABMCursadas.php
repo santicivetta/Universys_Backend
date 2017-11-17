@@ -23,7 +23,7 @@ function doABMCursadas($data) {
 		$miUsuario = validarSesion($conexion, $data["idSesion"]);
 
 	//valido permisos
-		if strcmp($miUsuario["tabla"],"Administradores") != 0 {
+		if (strcmp($miUsuario["tabla"],"Administradores") != 0) {
 			throw new Exception(permisosErroneos);	
 		}
 		
@@ -46,14 +46,13 @@ function doABMCursadas($data) {
 					if ($conexion->query($query4) === FALSE) {
 						throw new Exception(errorConexionBase);
 					};
-					$data["idCursada"]=$arrayCursada["idCursada"];
+					$data["idCursada"]=$cursada["idCursada"];
 					$data["operacion"]='modificacion';
 				}
 			}else{
 
-				$query = "INSERT INTO Cursadas (cuatrimestre, año, horario,	parcial, recuperatorio1, recuperatorio2) 
-						  values ('".$data['cuatrimestre']."' , '".$data['año']."' , '".$data['horario']."' , '".$data['fechaParcial']."' , '".$data['fechaRecuperatorio1']."' , '".$data['fechaRecuperatorio2']."'";
-
+				$query = "INSERT INTO Cursadas (idCatedra, cuatrimestre, año, horario,	parcial, recuperatorio1, recuperatorio2) 
+						  values ('".$data["idCatedra"]."','".$data['cuatrimestre']."' , '".$data['año']."' , '".$data['horario']."' , STR_TO_DATE('".$data['fechaParcial']."', '%d%m%Y') , STR_TO_DATE('".$data['fechaRecuperatorio1']."', '%d%m%Y'), STR_TO_DATE('".$data['fechaRecuperatorio2']."', '%d%m%Y'))";
 				if ($conexion->query($query) === FALSE) {
 					throw new Exception(errorConexionBase);
 				};
@@ -66,7 +65,7 @@ function doABMCursadas($data) {
 
 		if (strcmp($data["operacion"], "modificacion")==0) {
 
-			if ( empty($data['idCursada']) or empty($data['año']) or empty($data['horario']) or empty($data['fechaParcial']) or empty($data['fechaRecuperatorio1']) or empty($data['fechaRecuperatorio2']) ) 
+			if ( empty($data['idCursada']) or empty($data['cuatrimestre']) or empty($data['año']) or empty($data['horario']) or empty($data['fechaParcial']) or empty($data['fechaRecuperatorio1']) or empty($data['fechaRecuperatorio2']) ) 
 				throw new Exception(errorEnJson);
 
 			$query3='SELECT * FROM Cursadas WHERE idCursada="' . $data["idCursada"] . '"';
@@ -78,10 +77,10 @@ function doABMCursadas($data) {
 				$query = "UPDATE Cursadas 
 				SET cuatrimestre = '".$data["cuatrimestre"]."',
 					año = '".$data["año"]."',
-					horario = '".$data["horario"]."' 
-					parcial = '".$data["fechaParcial"]."',
-					recuperatorio1 = '".$data["fechaRecuperatorio1"]."',
-					recuperatorio2 = '".$data["fechaRecuperatorio2"]."'
+					horario = '".$data["horario"]."', 
+					parcial = STR_TO_DATE('".$data['fechaParcial']."', '%d-%m-%Y'),
+					recuperatorio1 = STR_TO_DATE('".$data['fechaRecuperatorio1']."', '%d-%m-%Y'),
+					recuperatorio2 = STR_TO_DATE('".$data['fechaRecuperatorio2']."', '%d-%m-%Y')
 				WHERE idCursada = '".$data["idCursada"]."'";
 
 				if ($conexion->query($query) === FALSE) {
@@ -138,7 +137,7 @@ function doABMCursadas($data) {
 
 		$conexion->close();
 
-		echo $arraySalida;
+		return $arraySalida;
 
 	} catch (Exception $e) {
 
@@ -148,7 +147,7 @@ function doABMCursadas($data) {
 			$conexion->close();
 		}
 
-		echo $arraySalida;
+		return $arraySalida;
 
 	}
 }
