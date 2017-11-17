@@ -27,6 +27,9 @@
       <button name="button" id="altaMateria">AltaMateria</button>
       <button name="button" id="modificacionMateria">ModifMateria</button>
       <button name="button" id="bajaMateria">BajaMateria</button>
+      <button name="button" id="altaCursada">AltaCursada</button>
+      <button name="button" id="modificacionCursada">ModifCursada</button>
+      <button name="button" id="bajaCursada">BajaCursada</button>
       <button name="button" id="todos"><strong>Todos</strong></button>
     </div>
     <div id="datos">
@@ -107,6 +110,21 @@
       bajaMateria(true);
     });
 
+    $('#altaCursada').click(function(){
+      cargando();
+      altaCursada(true);
+    });
+
+    $('#modificacionCursada').click(function(){
+      cargando();
+      modificacionCursada(true);
+    });
+
+    $('#bajaCursada').click(function(){
+      cargando();
+      bajaCursada(true);
+    });
+
     $('#limpiarConsola').click(function(){
       $('#respuesta').empty();
     });
@@ -127,7 +145,13 @@
                             bajaCatedra(false,function(){
                               altaMateria(false,function(){
                                 modificacionMateria(false,function(){
-                                  bajaMateria(true);
+                                  bajaMateria(false,function(){
+                                    altaCursada(false,function(){
+                                      modificacionCursada(false,function(){
+                                        bajaCursada(true);
+                                      });
+                                    });
+                                  });
                                 });
                               });
                             });
@@ -442,6 +466,69 @@
 
   function bajaMateria(estado=false,onComplete=null){
   $.ajax({url: "testingAbmMaterias/pruebaBaja.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function altaCursada(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCursadas/pruebaAlta.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function modificacionCursada(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCursadas/pruebaModificacion.php", 
+      type: 'POST', 
+      data: { },
+     success : function(respuesta) {
+       $('#respuesta').append(respuesta);
+       if(onComplete){
+        onComplete();
+       }
+       if (estado){
+          finalizado();
+       }
+     },
+     error : function(respuesta){
+      if(onComplete){
+        onComplete();
+      }
+    }
+   })
+  }
+
+  function bajaCursada(estado=false,onComplete=null){
+  $.ajax({url: "testingAbmCursadas/pruebaBaja.php", 
       type: 'POST', 
       data: { },
      success : function(respuesta) {
